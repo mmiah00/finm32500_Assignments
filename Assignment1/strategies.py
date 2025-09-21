@@ -13,7 +13,7 @@ class Strategy(ABC):
         pass
 
 
-class Moving_average_crossover(Strategy);
+class Moving_average_crossover(Strategy):
     def __init__(self, short_window=3, long_window=5, quantity=10):
         self.__short_windows = short_window
         self.__long_windows = long_window
