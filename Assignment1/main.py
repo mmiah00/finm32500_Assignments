@@ -7,7 +7,7 @@ import time
 import csv
 from models import MarketDataPoint, Order
 from data_loader import market_data_generator,generate_market_csv, read_market_data, generate_market_csv,read_market_data
-from reporting import * 
+from reporting import write_markdown_report
 
 def unit_test():
     order = Order("AAPL", 10, 150.0, "buy") #mutable
