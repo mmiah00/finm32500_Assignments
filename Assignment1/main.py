@@ -39,3 +39,6 @@ if __name__ == "__main__":
     points = read_market_data("market_data.csv")  #Buffer incoming MarketDataPoint instances in a list
 
     unit_test() #Demonstrate in a unit test that you can update Order.status but not MarketDataPoint.price
+    #print(points[0:3])
+    positions={'AAPL': {'quantity': 0, 'avg_price': 0.0}} #dict
+    
