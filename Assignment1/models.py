@@ -6,6 +6,12 @@ import random
 import time
 import csv
 
+class OrderError(Exception):
+    pass
+
+class ExecutionError(Exception):
+    pass
+    
 @dataclass(frozen=True)
 class MarketDataPoint:
     timestamp: datetime.datetime
@@ -13,29 +19,18 @@ class MarketDataPoint:
     price: float
 
 
+@dataclass
 class Order:
     def __init__(self, symbol, quantity, price, status):
         self.symbol  =symbol
         self.quantity = quantity
         self.price = price
         self.status = status
+    def __post_init__(self):
+        if self.quantity <= 0:
+            raise OrderError(f"The quantity must be positive! But receiving{self.quantity}")
+        if self.side not in ["BUY", "SELL"]:
+            raise OrderError(f"Invalid side: {self.side}")
 
-class TradingContainer:
-    def __init__(self):
-        self.market_data_buffer = []  # list of MarketDataPoint
 
-        self.positions = {}
 
-        self.signals = []
-
-    def buffer_market_data(self, tick: MarketDataPoint):
-        self.market_data_buffer.append(tick)
-
-    def add_signal(self, action: str, symbol: str, qty: int, price: float):
-        self.signals.append((action, symbol, qty, price))
-
-class OrderError(Exception):
-    pass
-
-class ExecutionError(Exception):
-    pass
