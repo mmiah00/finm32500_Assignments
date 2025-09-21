@@ -57,12 +57,12 @@ def calc_sharpe_ratio(self, marketdatapoints, periodic_returns):
     
 
 
-def max_drawdown (self): 
+def max_drawdown (self, marketdatapoints): 
     mdd = 0 
 
     peak = 0 
     trough = 0 
 
     mdd = (trough - peak)/peak
-    
+
     return mdd 
