@@ -7,6 +7,8 @@ import time
 import csv
 from models import MarketDataPoint, Order
 from data_loader import market_data_generator,generate_market_csv, read_market_data, generate_market_csv,read_market_data
+from reporting import * 
+
 def unit_test():
     order = Order("AAPL", 10, 150.0, "buy") #mutable
     point = MarketDataPoint(datetime.datetime.now(), "AAPL", 150.0) #frozen dataclass，immutable
