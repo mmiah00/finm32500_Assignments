@@ -19,6 +19,8 @@ class Moving_average_crossover(Strategy):
         self.__long_windows = long_window
         self.__quantity = quantity
         self.__prices=[]
+        self.__short_ma = 0
+        self.__long_ma = 0
         
     def generate_signals(self, tick):  #tick: MarketDataPoint
         self.__prices.append(tick.price)
