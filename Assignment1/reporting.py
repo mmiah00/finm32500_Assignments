@@ -19,7 +19,7 @@ def find_total_return (marketdatapoints):
     return total  
 
 
-def periodic_returns(marketdatapoints): 
+def calc_periodic_returns(marketdatapoints): 
     # periodic return = ((end_val / beg_val) - 1) * 100% 
 
     periodic_returns = [] 
@@ -53,7 +53,7 @@ def calc_sharpe_ratio(marketdatapoints, periodic_returns):
     mean_return = find_total_return (marketdatapoints) / num_datapoints
     
     for mdp in marketdatapoints: 
-        sigma += (mdp - mean_return) ** 2 # calculate squared variances for each data point 
+        sigma += (mdp.price - mean_return) ** 2 # calculate squared variances for each data point 
     
     sigma /= num_datapoints # at this point we have the variance (sigma^2)
     sigma ** 0.5 # take square root to find the stanadard deviation 
@@ -108,10 +108,10 @@ def save_equity_plot(marketdatapoints, filename="equity_curve.png"):
 
 def write_markdown_report(marketdatapoints, outpath="performance.md"):
     total_return = find_total_return (marketdatapoints)
-    sharpe = calc_sharpe_ratio (marketdatapoints)
+    periodic_returns = calc_periodic_returns(marketdatapoints)
+    sharpe = calc_sharpe_ratio (marketdatapoints, periodic_returns)
     max_dd = max_drawdown (marketdatapoints)
 
-    periodic_returns = periodic_returns(marketdatapoints)
     periodic_returns = pd.DataFrame(periodic_returns) # converting from a list to a Pandas Dataframe
 
     img_path = save_equity_plot(marketdatapoints)
@@ -133,3 +133,76 @@ def write_markdown_report(marketdatapoints, outpath="performance.md"):
 
 
     return outpath
+
+'''
+
+def compute_performance(equity_curve: List[Tuple[datetime, float]], annualization: float = 252.0):
+    """
+    Compute key performance metrics from equity curve.
+
+    equity_curve: list of (timestamp, equity_value)
+    annualization: scaling factor for Sharpe (252 ~ trading days)
+    """
+    df = pd.DataFrame(equity_curve, columns=['timestamp', 'equity']).set_index('timestamp')
+    df = df.sort_index()
+
+    # daily returns
+    df['returns'] = df['equity'].pct_change().fillna(0.0)
+
+    total_return = df['equity'].iloc[-1] / df['equity'].iloc[0] - 1.0
+    mean_ret = df['returns'].mean()
+    vol = df['returns'].std(ddof=0)
+    sharpe = (mean_ret / (vol if vol > 0 else 1e-9)) * np.sqrt(annualization)
+
+    # drawdown
+    df['cum_max'] = df['equity'].cummax()
+    df['drawdown'] = (df['equity'] - df['cum_max']) / df['cum_max']
+    max_dd = df['drawdown'].min()
+
+    return {
+        'df': df,
+        'total_return': total_return,
+        'sharpe': sharpe,
+        'max_drawdown': max_dd
+    }
+
+def save_equity_plot(df, filename="equity_curve.png"):
+    plt.figure(figsize=(8,4))
+    df['equity'].plot(title="Equity Curve")
+    plt.ylabel("Equity Value")
+    plt.xlabel("Time")
+    plt.tight_layout()
+    plt.savefig(filename)
+    plt.close()
+    return filename
+
+def write_markdown_report(perf: dict, outpath="performance.md"):
+    df = perf['df']
+    total_return = perf['total_return']
+    sharpe = perf['sharpe']
+    max_dd = perf['max_drawdown']
+
+    img_path = save_equity_plot(df)
+
+    with open(outpath, "w") as f:
+        f.write("# Backtest Performance Report\n\n")
+        f.write("## Key Metrics\n\n")
+        f.write("| Metric | Value |\n")
+        f.write("|--------|-------:|\n")
+        f.write(f"| Total Return | {total_return:.2%} |\n")
+        f.write(f"| Sharpe Ratio (annualized) | {sharpe:.2f} |\n")
+        f.write(f"| Max Drawdown | {max_dd:.2%} |\n\n")
+
+        f.write("## Equity Curve\n\n")
+        f.write(f"![Equity Curve]({img_path})\n\n")
+
+        f.write("## Periodic Returns (summary)\n\n")
+        f.write(df['returns'].describe().to_markdown() + "\n\n")
+
+        f.write("## Narrative\n\n")
+        f.write("The equity curve shows how portfolio value evolved over time. ")
+        f.write("Positive total return and a higher Sharpe ratio indicate favorable risk-adjusted performance. ")
+        f.write("Maximum drawdown highlights worst-case peak-to-trough losses.\n")
+
+    return outpath
+'''
