@@ -60,9 +60,26 @@ def calc_sharpe_ratio(self, marketdatapoints, periodic_returns):
 def max_drawdown (self, marketdatapoints): 
     mdd = 0 
 
-    peak = 0 
-    trough = 0 
+    portfolio_val = marketdatapoints[0].price 
+
+    peak = float('-inf')
+    trough = float('inf')
+
+    for order in orders: 
+        if order.side == "BUY": 
+            # a trough 
+            portfolio_val = portfolio_val - order.price * quantity
+            trough = min (trough, portfolio_val)
+        else: 
+            # a peak 
+            portfolio_val = portfolio_val + order.price * quantity
+            peak = max (peak, portfolio_val)
 
     mdd = (trough - peak)/peak
 
     return mdd 
+
+
+# An equity-curve plot visually represents an investment's or trading strategy's 
+# performance over time, with the y-axis showing the account value and the x-axis 
+# representing time or trade number.
