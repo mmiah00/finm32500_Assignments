@@ -11,6 +11,8 @@ class ExecutionEngine:
         self.market_data = sorted(market_data, key=lambda x: x.timestamp)
         self.strategies = strategies
         self.portfolio = {}
+        #In the execution engine, simulate occasional failures and raise ExecutionError; catch and log these errors to continue processing.
+        self.execution_failure_chance = 0.05  #Assuming fail rate
 
     def run(self):
         # For each tick:
@@ -23,10 +25,19 @@ class ExecutionEngine:
                     for signal in signals:
                         # Instantiate and validate Order objects.
                         order = models.Order(*signal)
+
+                        # Simulate failures
+                        if random.random() < self.execution_failure_chance:
+                            raise models.ExecutionError("Failure Occurs")
+                            
                         # Execute orders by updating the portfolio dictionary.
                         self.execute_order(order)
                 except Exception as e:
                     print(f"Error processing tick {tick} with strategy {strategy}: {e}")
+                except model.OrderError as e:
+                    print(f"Invalid order with strategy {strategy}: {e}")
+                except model.ExecutionError as e:
+                    print(f"Execution Failure with strategy {strategy}: {e}")
 
     def execute_order(self, order):
         if order.symbol not in self.portfolio:
