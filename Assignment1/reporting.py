@@ -56,7 +56,7 @@ def calc_sharpe_ratio(marketdatapoints, periodic_returns):
         sigma += (mdp.price - mean_return) ** 2 # calculate squared variances for each data point 
     
     sigma /= num_datapoints # at this point we have the variance (sigma^2)
-    sigma ** 0.5 # take square root to find the stanadard deviation 
+    sigma = sigma ** 0.5 # take square root to find the stanadard deviation 
 
     return (Rp - Rf) / sigma 
     
