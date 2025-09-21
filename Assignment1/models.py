@@ -19,3 +19,23 @@ class Order:
         self.quantity = quantity
         self.price = price
         self.status = status
+
+class TradingContainer:
+    def __init__(self):
+        self.market_data_buffer = []  # list of MarketDataPoint
+
+        self.positions = {}
+
+        self.signals = []
+
+    def buffer_market_data(self, tick: MarketDataPoint):
+        self.market_data_buffer.append(tick)
+
+    def add_signal(self, action: str, symbol: str, qty: int, price: float):
+        self.signals.append((action, symbol, qty, price))
+
+class OrderError(Exception):
+    pass
+
+class ExecutionError(Exception):
+    pass
