@@ -41,4 +41,6 @@ if __name__ == "__main__":
     unit_test() #Demonstrate in a unit test that you can update Order.status but not MarketDataPoint.price
     #print(points[0:3])
     positions={'AAPL': {'quantity': 0, 'avg_price': 0.0}} #dict
+
+    write_markdown_report(points)
     
