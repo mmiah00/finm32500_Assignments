@@ -20,34 +20,24 @@ from engine import ExecutionEngine
 #     return total  
 
 def find_total_return (engine): 
-    initial_cash = engine.cash 
+    total = 0 
 
-    engine.run() 
+    orders = engine.order_history
 
-    final_cash = engine.cash
+    portfolio_val = engine.cash
 
-    print (f"Initial Cash: {initial_cash} | Final Cash: {final_cash}") 
-
-    return (final_cash - initial_cash) / initial_cash
-
-    # total = 0 
-
-    # orders = engine.order_history
-
-    # portfolio_val = engine.cash
-
-    # for order in orders: 
-    #     if order.status == "BUY": 
-    #         new_portfolio_val = portfolio_val - order.price * order.quantity
-    #     else: 
-    #         new_portfolio_val = portfolio_val + order.price * order.quantity
+    for order in orders: 
+        if order.status == "BUY": 
+            new_portfolio_val = portfolio_val - order.price * order.quantity
+        else: 
+            new_portfolio_val = portfolio_val + order.price * order.quantity
         
-    #     simple_return = (new_portfolio_val - portfolio_val) / portfolio_val
+        simple_return = (new_portfolio_val - portfolio_val) / portfolio_val
 
-    #     total += simple_return 
-    #     portfolio_val = new_portfolio_val
+        total += simple_return 
+        portfolio_val = new_portfolio_val
 
-    # return total 
+    return total 
 
 
 
