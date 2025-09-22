@@ -47,7 +47,7 @@ class ExecutionEngine:
                 except models.ExecutionError as e:
                     print(f"Execution Failure with strategy {strategy}: {e}")
 
-       def execute_order(self, order: models.Order):
+    def execute_order(self, order: models.Order):
         symbol = order.symbol
 
         if symbol not in self.portfolio:
