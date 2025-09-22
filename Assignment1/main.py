@@ -49,7 +49,8 @@ if __name__ == "__main__":
     #print(points[0:3])
     positions={'AAPL': {'quantity': 0, 'avg_price': 0.0}} #dict
 
-    strategies = None # NEED TO UPDATE 
+    strategies =[ma_crossover_strategy, momentum_strategy]
     engine = ExecutionEngine(points, strategies) 
+    engine.run()
     write_markdown_report(engine)
     
