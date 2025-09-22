@@ -20,24 +20,24 @@ from engine import ExecutionEngine
 #     return total  
 
 def find_total_return (engine): 
-    total = 0 
+ 
+    marketdatapoints = engine.market_data 
 
-    orders = engine.order_history
+    # cash at the end of the run
+    end_cash = engine.cash
+    starting_cash = 100000
 
-    portfolio_val = engine.cash
+    holdings_value = 0.0
+    for symbol, quantity in engine.portfolio.items():
+        if marketdatapoints[-1].symbol == symbol:
+            price = marketdatapoints[-1].price
+            holdings_value += quantity * price
 
-    for order in orders: 
-        if order.status == "BUY": 
-            new_portfolio_val = portfolio_val - order.price * order.quantity
-        else: 
-            new_portfolio_val = portfolio_val + order.price * order.quantity
-        
-        simple_return = (new_portfolio_val - portfolio_val) / portfolio_val
+    end_portfolio_value = end_cash + holdings_value
+    total_return = (end_portfolio_value - starting_cash) / starting_cash
+    print(f'total_return = {total_return}')
+    return total_return
 
-        total += simple_return 
-        portfolio_val = new_portfolio_val
-
-    return total 
 
 
 
@@ -204,7 +204,6 @@ def write_markdown_report(engine, outpath="performance.md"):
         f.write(f"![Equity Curve]({img_path})\n\n")
 
         f.write("## Periodic Returns (summary)\n\n")
-        f.write(periodic_returns.describe().to_markdown() + "\n\n")
-
+        f.write(periodic_returns.describe().to_markdown() + "\n\n")    
 
     return outpath
