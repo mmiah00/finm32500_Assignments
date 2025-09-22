@@ -41,16 +41,16 @@ if __name__ == "__main__":
 
     points = read_market_data("market_data.csv")  #Buffer incoming MarketDataPoint instances in a list
 
+    ma_crossover_strategy = Moving_average_crossover(short_window=3, long_window=7, quantity=10)
+    momentum_strategy = MomentumStrategy(lookback=2, quantity=5)
+
+    
     unit_test() #Demonstrate in a unit test that you can update Order.status but not MarketDataPoint.price
     #print(points[0:3])
     positions={'AAPL': {'quantity': 0, 'avg_price': 0.0}} #dict
 
 
     strategies = None # NEED TO UPDATE 
-    engine = ExecutionEngine(points, strategies, starting_cash=100000)
-    engine.run()
-
-
-
+    engine = ExecutionEngine(points, strategies) 
     write_markdown_report(engine)
     
