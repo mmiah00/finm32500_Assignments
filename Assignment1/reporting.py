@@ -27,11 +27,13 @@ def find_total_return (engine):
     end_cash = engine.cash
     starting_cash = 100000
 
+    portfolio = engine.portfolio
+
     holdings_value = 0.0
     for symbol, quantity in engine.portfolio.items():
         if marketdatapoints[-1].symbol == symbol:
             price = marketdatapoints[-1].price
-            holdings_value += quantity * price
+            holdings_value += quantity['quantity'] * price
 
     end_portfolio_value = end_cash + holdings_value
     total_return = (end_portfolio_value - starting_cash) / starting_cash
@@ -193,6 +195,13 @@ def write_markdown_report(engine, outpath="performance.md"):
         f.write(f"![Equity Curve]({img_path})\n\n")
 
         f.write("## Periodic Returns (summary)\n\n")
-        f.write(periodic_returns.describe().to_markdown() + "\n\n")    
+        f.write(periodic_returns.describe().to_markdown() + "\n\n")  
+
+        f.write("## Narrative\n\n")
+        f.write("The equity curve shows how portfolio value evolved over time.") 
+        f.write("For every iteration of the program, our data changes slightly, and the curve is different each time. There are rises and falls throughout the curve, but an overall decline in equity value.")
+        f.write("Positive total return and a higher Sharpe ratio indicate favorable risk-adjusted performance. ")
+        f.write("Maximum drawdown highlights worst-case peak-to-trough losses.\n")
+        f.write ("Given that market data generation is random, it is hard to assess the effectiveness of our strategies.")  
 
     return outpath
