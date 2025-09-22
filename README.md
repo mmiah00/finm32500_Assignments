@@ -28,7 +28,7 @@ Simulating potential execution failures to test resilience.
 ## 'models.py'
 This module defines the data structures used throughout the application:
 
-'MarketDataPoint': A dataclass representing immutable data for a single market data tick with timestamp, symbol, and price.
+/MarketDataPoint/: A dataclass representing immutable data for a single market data tick with timestamp, symbol, and price.
 
 Order: A dataclass representing a trading order containing trade code, quantity, price, and direction (buy/sell). It includes validation functions to prevent invalid orders.
 
