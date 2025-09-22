@@ -16,7 +16,8 @@ It drives the core data processing:
 
 We wrote run() to iterate through time-series market data and simulating potential execution failures.
 
-Then, a criteria for judgement is designed for ceceiving trade signals from the strategy and executing trades and updating portfolio state, which is put in execute_order(self, order: models.Order):
+Then, a set of criteria was designed to receive trading signals from the strategy, execute trades, and update the portfolio status. This logic is encapsulated within the `execute_order(self, order: models.Order)`
+
 
 ## 'strategies.py'
 This module contains the logic to get a desicion of "BUY" and "SELL". 
@@ -37,3 +38,4 @@ Initializing the trading strategy to be tested.
 Instantiating and running the ExecutionEngine.
 
 Triggering the generation of the final performance report.
+
