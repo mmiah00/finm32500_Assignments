@@ -9,7 +9,7 @@ This module defines the data structures used throughout the application:
 
 /MarketDataPoint/ and /Order/
 
-We also write OrderError handles specific issues during simulation processing.
+We also write OrderError to handle specific issues during simulation processing.
 
 ## 'engine.py '
 It drives the core data processing: 
