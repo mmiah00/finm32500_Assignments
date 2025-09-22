@@ -13,6 +13,8 @@ class ExecutionEngine:
         self.strategies = strategies
         self.cash = starting_cash
         self.portfolio = {}
+        # simple order history for reporting
+        self.order_history = []
         #In the execution engine, simulate occasional failures and raise ExecutionError; catch and log these errors to continue processing.
         self.execution_failure_chance = 0.05  #Assuming fail rate
 
@@ -34,6 +36,10 @@ class ExecutionEngine:
                             
                         # Execute orders by updating the portfolio dictionary.
                         self.execute_order(order)
+
+                        # record the executed order in history for reporting
+                        self.order_history.append(order)
+                        
                 except Exception as e:
                     print(f"Error processing tick {tick} with strategy {strategy}: {e}")
                 except models.OrderError as e:
