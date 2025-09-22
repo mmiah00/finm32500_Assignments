@@ -154,19 +154,8 @@ def save_equity_plot(engine, filename="equity_curve.png"):
         x.append(i) 
         i += 1
 
-        equity = mdp.price * portfolio[mdp.symbol] 
-
-
-
-        if order.status == "BUY": 
-            portfolio_val = portfolio_val - order.price * order.quantity
-        else: 
-            portfolio_val = portfolio_val + order.price * order.quantity
-        
-        x.append(i) 
-        y.append(portfolio_val)
-
-        i += 1
+        equity = mdp.price * portfolio[mdp.symbol]['quantity'] 
+        y.append(equity)
 
 
     plt.figure(figsize=(8,4))
