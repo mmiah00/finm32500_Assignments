@@ -43,7 +43,7 @@ if __name__ == "__main__":
     points = read_market_data("market_data.csv")  #Buffer incoming MarketDataPoint instances in a list
 
     ma_crossover_strategy = Moving_average_crossover(short_window=3, long_window=7, quantity=10)
-    momentum_strategy = MomentumStrategy(lookback=2, quantity=5)
+    momentum_strategy = MomentumStrategy(lookback=2, quantity=10)
 
     
     unit_test() #Demonstrate in a unit test that you can update Order.status but not MarketDataPoint.price
