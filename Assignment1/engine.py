@@ -26,7 +26,7 @@ class ExecutionEngine:
                     signals = strategy.generate_signals(tick)
                     for signal in signals:
                         # Instantiate and validate Order objects.
-                        order = models.Order(*signal)
+                        order = models.Order(signal[1],signal[2],signal[3],signal[0])
 
                         # Simulate failures
                         if random.random() < self.execution_failure_chance:
