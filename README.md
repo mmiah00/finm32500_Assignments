@@ -28,13 +28,11 @@ Simulating potential execution failures to test resilience.
 ## 'models.py'
 This module defines the data structures used throughout the application:
 
-/MarketDataPoint/: A dataclass representing immutable data for a single market data tick with timestamp, symbol, and price.
+/MarketDataPoint/ and /Order/
 
-Order: A dataclass representing a trading order containing trade code, quantity, price, and direction (buy/sell). It includes validation functions to prevent invalid orders.
+We also write OrderError handles specific issues during simulation processing.
 
-Custom Exceptions: OrderError handles specific issues during simulation processing.
-
-strategies.py
+## 'strategies.py'
 This module contains trading logic. It features an abstract base class and concrete strategy implementations:
 
 Strategy: Abstract base class defining the interface for all trading strategies.
