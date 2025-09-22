@@ -15,44 +15,44 @@ class Strategy(ABC):
 
 class Moving_average_crossover(Strategy):
     def __init__(self, short_window=3, long_window=5, quantity=10):
-        self.__short_windows = short_window
-        self.__long_windows = long_window
-        self.__quantity = quantity
-        self.__prices=[]
-        self.__short_ma = 0
-        self.__long_ma = 0
+        self.short_windows = short_window
+        self.long_windows = long_window
+        self.quantity = quantity
+        self.prices=[]
+        self.short_ma = 0
+        self.long_ma = 0
         
     def generate_signals(self, tick):  #tick: MarketDataPoint
-        self.__prices.append(tick.price)
-        if len(self.__prices) < self._long_window:
+        self.prices.append(tick.price)
+        if len(self.prices) < self.long_windows:
             return []
         
-        short_ma = sum(self.__prices[-self.__short_window:]) / self.__short_window
-        long_ma = sum(self.__prices[-self.__long_window:]) / self.__long_window
+        short_ma = sum(self.prices[-self.short_windows:]) / self.short_windows
+        long_ma = sum(self.prices[-self.long_windows:]) / self.long_windows
 
         if short_ma > long_ma:
-            return [("BUY", tick.symbol, self.__quantity, tick.price)]
+            return [("BUY", tick.symbol, self.quantity, tick.price)]
         elif short_ma < long_ma:
-            return [("SELL", tick.symbol, self.__quantity, tick.price)]
+            return [("SELL", tick.symbol, self.quantity, tick.price)]
         else:
             return []
 
 class MomentumStrategy(Strategy):
     def __init__(self, lookback=3, quantity=10):
-        self.__lookback = lookback
-        self.__quantity = quantity
-        self.__prices = []
+        self.lookback = lookback
+        self.quantity = quantity
+        self.prices = []
 
     def generate_signals(self, tick: MarketDataPoint):
-        self.__prices.append(tick.price)
-        if len(self.__prices) <= self.__lookback:
+        self.prices.append(tick.price)
+        if len(self.prices) <= self.lookback:
             return []
 
-        momentum = tick.price - self.__prices[-self.__lookback]
+        momentum = tick.price - self.prices[-self.lookback]
 
         if momentum > 0:
-            return [("BUY", tick.symbol, self.__quantity, tick.price)]
+            return [("BUY", tick.symbol, self.quantity, tick.price)]
         elif momentum < 0:
-            return [("SELL", tick.symbol, self.__quantity, tick.price)]
+            return [("SELL", tick.symbol, self.quantity, tick.price)]
         else:
             return []
