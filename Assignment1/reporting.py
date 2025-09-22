@@ -92,6 +92,7 @@ def max_drawdown (engine):
     return mdd 
 
 def save_equity_plot(engine, filename="equity_curve.png"):
+    x = [] 
     y = [] 
 
     marketdatapoints = engine.market_data 
@@ -99,16 +100,21 @@ def save_equity_plot(engine, filename="equity_curve.png"):
 
     portfolio_val = 0 
 
+    i = 0 
     for order in orders: 
         if order.status == "BUY": 
             portfolio_val = portfolio_val - order.price * order.quantity
         else: 
             portfolio_val = portfolio_val + order.price * order.quantity
+        
+        x.append(i) 
         y.append(portfolio_val)
+
+        i += 1
 
 
     plt.figure(figsize=(8,4))
-    y.plot(title="Equity Curve")
+    plt.plot(x,y)
     plt.ylabel("Equity Value")
     plt.xlabel("Time")
     plt.tight_layout()
