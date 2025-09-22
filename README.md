@@ -33,14 +33,11 @@ This module defines the data structures used throughout the application:
 We also write OrderError handles specific issues during simulation processing.
 
 ## 'strategies.py'
-This module contains trading logic. It features an abstract base class and concrete strategy implementations:
+This module contains the logic to get a desicion of "BUY" and "SELL". 
 
-Strategy: Abstract base class defining the interface for all trading strategies.
+It features an abstract base class and concrete strategy implementations:
 
-Moving_average_crossover: Concrete strategy generating signals based on the crossover of short-term and long-term moving averages.
+Moving_average_crossover: Crossover of short-term and long-term moving averages.
 
-MomentumStrategy: A concrete strategy generating signals based on price momentum over a specified lookback period.
+MomentumStrategy: Price momentum over a specified lookback period.
 
-
-
-Translated with DeepL.com (free version)
