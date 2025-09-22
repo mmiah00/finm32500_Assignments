@@ -70,21 +70,21 @@ def calc_sharpe_ratio(engine, periodic_returns):
 def max_drawdown (engine): 
     mdd = 0 
 
-    marketdatapoints = engine.market_data 
+    orders = engine.order_history
 
-    portfolio_val = marketdatapoints[0].price 
+    portfolio_val = 0
 
     peak = float('-inf')
     trough = float('inf')
 
     for order in orders: 
-        if order.side == "BUY": 
+        if order.status == "BUY": 
             # a trough 
-            portfolio_val = portfolio_val - order.price * quantity
+            portfolio_val = portfolio_val - order.price * order.quantity
             trough = min (trough, portfolio_val)
         else: 
             # a peak 
-            portfolio_val = portfolio_val + order.price * quantity
+            portfolio_val = portfolio_val + order.price * order.quantity
             peak = max (peak, portfolio_val)
 
     mdd = (trough - peak)/peak
@@ -95,14 +95,15 @@ def save_equity_plot(engine, filename="equity_curve.png"):
     y = [] 
 
     marketdatapoints = engine.market_data 
+    orders = engine.order_history
 
     portfolio_val = 0 
 
     for order in orders: 
-        if order.side == "BUY": 
-            portfolio_val = portfolio_val - order.price * quantity
+        if order.status == "BUY": 
+            portfolio_val = portfolio_val - order.price * order.quantity
         else: 
-            portfolio_val = portfolio_val + order.price * quantity
+            portfolio_val = portfolio_val + order.price * order.quantity
         y.append(portfolio_val)
 
 
