@@ -52,8 +52,8 @@ if __name__ == "__main__":
 
 
     strategies = [ma_crossover_strategy, momentum_strategy]
-    engine = ExecutionEngine(points, strategies) 
+    engine = ExecutionEngine(points, strategies, initial_cash=100000) 
     engine.run()
-    
+
     write_markdown_report(engine)
     
