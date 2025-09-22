@@ -14,15 +14,9 @@ We also write OrderError to handle specific issues during simulation processing.
 ## 'engine.py '
 It drives the core data processing: 
 
-Iterating through time-series market data.
+We wrote run() to iterate through time-series market data and simulating potential execution failures.
 
-Passing market data to the strategy.
-
-Receiving trade signals from the strategy.
-
-Executing trades and updating portfolio state.
-
-Simulating potential execution failures to test resilience.
+Then, a criteria for judgement is designed for ceceiving trade signals from the strategy and executing trades and updating portfolio state, which is put in execute_order(self, order: models.Order):
 
 ## 'strategies.py'
 This module contains the logic to get a desicion of "BUY" and "SELL". 
