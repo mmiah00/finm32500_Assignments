@@ -54,7 +54,7 @@ if __name__ == "__main__":
     strategies = [ma_crossover_strategy, momentum_strategy]
     engine = ExecutionEngine(points, strategies, starting_cash=100000) 
     engine.run()
-    print(engine.order_history)           # full per-tick equity time series
+    # print(engine.order_history)           # full per-tick equity time series
 
     write_markdown_report(engine)
     

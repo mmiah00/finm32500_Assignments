@@ -197,7 +197,7 @@ def write_markdown_report(engine, outpath="performance.md"):
         f.write("## Periodic Returns (summary)\n\n")
         f.write(periodic_returns.describe().to_markdown() + "\n\n")  
 
-        f.write("## Narrative\n\n")
+        f.write("## Interpretation of Results \n\n")
         f.write("The equity curve shows how portfolio value evolved over time.") 
         f.write("For every iteration of the program, our data changes slightly, and the curve is different each time. There are rises and falls throughout the curve, but an overall decline in equity value.")
         f.write("Positive total return and a higher Sharpe ratio indicate favorable risk-adjusted performance. ")
