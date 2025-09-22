@@ -1,4 +1,4 @@
-# finm32500-assignment1
+# FINM 32500 - Assignment 1
 Our team first divided the project into several Python modules, assigning specific responsibilities to each:
 
 ## 'data_loader.py'
