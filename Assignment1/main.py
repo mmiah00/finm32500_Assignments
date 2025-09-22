@@ -9,6 +9,7 @@ from models import MarketDataPoint, Order
 from data_loader import market_data_generator,generate_market_csv, read_market_data, generate_market_csv,read_market_data
 from engine import ExecutionEngine
 from reporting import write_markdown_report
+from strategies import Moving_average_crossover, MomentumStrategy
 
 def unit_test():
     order = Order("AAPL", 10, 150.0, "buy") #mutable
