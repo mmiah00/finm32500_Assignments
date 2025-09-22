@@ -30,7 +30,9 @@ MomentumStrategy: Price momentum over a specified lookback period.
 
 ## 'reporting.py'
 
-This module analyzes backtesting results and generates performance reports. It is crucial because it visualizes several key financial metrics: Total Return; Sharpe Ratio and Maximum Drawdown: 
+This module analyzes backtesting results and generates performance reports. 
+
+It is crucial because it visualizes several key financial metrics: Total Return; Sharpe Ratio and Maximum Drawdown: 
 
 ## 'main.py'
 This serves as the primary entry point for running backtesting simulations. It handles the entire workflow including:
