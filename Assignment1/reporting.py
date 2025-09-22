@@ -4,45 +4,100 @@ import numpy as np
 import matplotlib.pyplot as plt
 from engine import ExecutionEngine
 
-def find_total_return (engine): 
-    total  = 0 
-    marketdatapoints = engine.market_data 
+# def find_total_return (engine): 
+#     total  = 0 
+#     marketdatapoints = engine.market_data 
 
-    prev_order = marketdatapoints[0] 
+#     prev_order = marketdatapoints[0] 
     
-    for i in range (1, len(marketdatapoints)): 
-        curr_order = marketdatapoints[i] 
-        simple_return = (curr_order.price - prev_order.price - 0.0) / prev_order.price
-        total += simple_return 
+#     for i in range (1, len(marketdatapoints)): 
+#         curr_order = marketdatapoints[i] 
+#         simple_return = (curr_order.price - prev_order.price - 0.0) / prev_order.price
+#         total += simple_return 
 
-        prev_order = curr_order 
+#         prev_order = curr_order 
 
-    return total  
+#     return total  
 
+def find_total_return (engine): 
+    initial_cash = engine.cash 
+
+    engine.run() 
+
+    final_cash = engine.cash
+
+    print (f"Initial Cash: {initial_cash} | Final Cash: {final_cash}") 
+
+    return (final_cash - initial_cash) / initial_cash
+
+    # total = 0 
+
+    # orders = engine.order_history
+
+    # portfolio_val = engine.cash
+
+    # for order in orders: 
+    #     if order.status == "BUY": 
+    #         new_portfolio_val = portfolio_val - order.price * order.quantity
+    #     else: 
+    #         new_portfolio_val = portfolio_val + order.price * order.quantity
+        
+    #     simple_return = (new_portfolio_val - portfolio_val) / portfolio_val
+
+    #     total += simple_return 
+    #     portfolio_val = new_portfolio_val
+
+    # return total 
+
+
+
+# def calc_periodic_returns(engine): 
+#     # periodic return = ((end_val / beg_val) - 1) * 100% 
+
+#     marketdatapoints = engine.market_data 
+
+#     periodic_returns = [] 
+
+#     prev_order = marketdatapoints[0] 
+
+#     for i in range (1, len(marketdatapoints)): 
+#         curr_order = marketdatapoints[i] 
+
+#         calc = ((curr_order.price / prev_order.price) - 1) # * 100 if i want to find the percentage, otherwise leave between 0-1 
+#         periodic_returns.append(calc) 
+        
+#         prev_order = curr_order
+
+#     return periodic_returns  
 
 def calc_periodic_returns(engine): 
-    # periodic return = ((end_val / beg_val) - 1) * 100% 
+    orders = engine.order_history
 
-    marketdatapoints = engine.market_data 
+    portfolio_val = engine.cash
 
     periodic_returns = [] 
 
-    prev_order = marketdatapoints[0] 
-
-    for i in range (1, len(marketdatapoints)): 
-        curr_order = marketdatapoints[i] 
-
-        calc = ((curr_order.price / prev_order.price) - 1) # * 100 if i want to find the percentage, otherwise leave between 0-1 
-        periodic_returns.append(calc) 
+    for order in orders: 
+        if order.status == "BUY": 
+            new_portfolio_val = portfolio_val - order.price * order.quantity
+        else: 
+            new_portfolio_val = portfolio_val + order.price * order.quantity
         
-        prev_order = curr_order
+        calc = ((new_portfolio_val / portfolio_val) - 1) 
 
-    return periodic_returns  
+        periodic_returns.append(calc)
+        portfolio_val = new_portfolio_val
 
-def calc_sharpe_ratio(engine, periodic_returns): 
+    return periodic_returns 
+
+def calc_sharpe_ratio(engine): 
+    print ("Calculating Sharpe Ratio")
+
     marketdatapoints = engine.market_data
+    periodic_returns = calc_periodic_returns(engine)
 
-    num_datapoints = len(marketdatapoints) 
+    # num_datapoints = len(marketdatapoints) 
+    num_datapoints = len(engine.order_history) 
 
     Rp = 0 # Portfolio's Average Return (Rp) 
     Rf = 0.0389 # Risk-Free Rate (Rf), for our purposes we will use the yield on a 3-month U.S. Treasury bill as the risk-free rate. The current 3 Month Treasury Bill Rate, as of September 19, 2025, is 3.89%
@@ -56,23 +111,27 @@ def calc_sharpe_ratio(engine, periodic_returns):
 
     # calculate Sigma 
     mean_return = find_total_return (engine) / num_datapoints
+    print (f"Mean return: {mean_return}")
     
     for mdp in marketdatapoints: 
-        sigma += (mdp.price - mean_return) ** 2 # calculate squared variances for each data point 
+        sigma += (mdp.price + 0.0 - mean_return) ** 2 # calculate squared variances for each data point 
     
     sigma /= num_datapoints # at this point we have the variance (sigma^2)
     sigma = sigma ** 0.5 # take square root to find the stanadard deviation 
 
+    print (f"Rp: {Rp}")
+    print (f"Rf: {Rf}")
+    print (f"sigma: {sigma}")
+
     return (Rp - Rf) / sigma 
     
-
 
 def max_drawdown (engine): 
     mdd = 0 
 
     orders = engine.order_history
 
-    portfolio_val = 0
+    portfolio_val = engine.cash
 
     peak = float('-inf')
     trough = float('inf')
@@ -98,7 +157,7 @@ def save_equity_plot(engine, filename="equity_curve.png"):
     marketdatapoints = engine.market_data 
     orders = engine.order_history
 
-    portfolio_val = 0 
+    portfolio_val = engine.cash 
 
     i = 0 
     for order in orders: 
@@ -117,6 +176,7 @@ def save_equity_plot(engine, filename="equity_curve.png"):
     plt.plot(x,y)
     plt.ylabel("Equity Value")
     plt.xlabel("Time")
+    plt.title('Equity Curve Plot')
     plt.tight_layout()
     plt.savefig(filename)
     plt.close()
@@ -127,7 +187,7 @@ def write_markdown_report(engine, outpath="performance.md"):
 
     total_return = find_total_return (engine)
     periodic_returns = calc_periodic_returns(engine)
-    sharpe = calc_sharpe_ratio (engine, periodic_returns)
+    sharpe = calc_sharpe_ratio (engine)
     max_dd = max_drawdown (engine)
 
     periodic_returns = pd.DataFrame(periodic_returns) # converting from a list to a Pandas Dataframe
@@ -140,7 +200,7 @@ def write_markdown_report(engine, outpath="performance.md"):
         f.write("| Metric | Value |\n")
         f.write("|--------|-------:|\n")
         f.write(f"| Total Return | {total_return:.2%} |\n")
-        f.write(f"| Sharpe Ratio (annualized) | {sharpe:.2f} |\n")
+        f.write(f"| Sharpe Ratio | {sharpe:.2f} |\n")
         f.write(f"| Max Drawdown | {max_dd:.2%} |\n\n")
 
         f.write("## Equity Curve\n\n")
