@@ -145,12 +145,19 @@ def save_equity_plot(engine, filename="equity_curve.png"):
     y = [] 
 
     marketdatapoints = engine.market_data 
-    orders = engine.order_history
+    portfolio = engine.portfolio 
 
     portfolio_val = engine.cash 
 
     i = 0 
-    for order in orders: 
+    for mdp in marketdatapoints: 
+        x.append(i) 
+        i += 1
+
+        equity = mdp.price * portfolio[mdp.symbol] 
+
+
+
         if order.status == "BUY": 
             portfolio_val = portfolio_val - order.price * order.quantity
         else: 
