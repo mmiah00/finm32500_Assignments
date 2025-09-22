@@ -1,7 +1,8 @@
 # finm32500-assignment1
 Our team first divided the project into several Python modules, assigning specific responsibilities to each:
 
-## ''
+## 'data_loader.py'
+This module contains a basic method for opening any CSV document.
 
 ## 'models.py'
 This module defines the data structures used throughout the application:
