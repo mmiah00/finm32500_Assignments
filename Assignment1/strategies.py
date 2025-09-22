@@ -44,7 +44,7 @@ class MomentumStrategy(Strategy):
         self.__prices = []
 
     def generate_signals(self, tick: MarketDataPoint):
-        self._prices.append(tick.price)
+        self.__prices.append(tick.price)
         if len(self.__prices) <= self.__lookback:
             return []
 
