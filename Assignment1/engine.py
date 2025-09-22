@@ -47,15 +47,36 @@ class ExecutionEngine:
                 except models.ExecutionError as e:
                     print(f"Execution Failure with strategy {strategy}: {e}")
 
-    def execute_order(self, order):
-        if order.symbol not in self.portfolio:
-            self.portfolio[order.symbol] = 0
+       def execute_order(self, order: models.Order):
+        symbol = order.symbol
 
-        if order.side == "BUY":
-            self.portfolio[order.symbol] += order.quantity * order.price
-            self.cash -= order.quantity * order.price
-        elif order.side == "SELL":
-            self.portfolio[order.symbol] -= order.quantity * order.price
-            self.cash += order.quantity * order.price
+        if symbol not in self.portfolio:
+            self.portfolio[symbol] = {'quantity': 0, 'avg_price': 0.0}
 
-        print(f"Executed {order.side} order for {order.quantity} of {order.symbol} at {order.price}. Current position: {self.portfolio[order.symbol]}")
+        current_qty = self.portfolio[symbol]['quantity']
+        current_avg_price = self.portfolio[symbol]['avg_price']
+
+
+        if order.status == "BUY":
+                new_qty = current_qty + order.quantity
+                new_avg_price = ((current_avg_price * current_qty) + (order.price * order.quantity)) / new_qty
+
+                self.portfolio[symbol]['quantity'] = new_qty
+                self.portfolio[symbol]['avg_price'] = new_avg_price
+                self.order_history.append(order)
+
+        elif order.status == "SELL":
+                if self.portfolio[symbol]['quantity'] == 0:
+                     pass
+                else:
+                    new_qty = current_qty - order.quantity
+                    self.portfolio[symbol]['quantity'] = new_qty
+                    self.order_history.append(order)
+                    if new_qty == 0:
+                        self.portfolio[symbol]['avg_price'] = 0.0
+
+        print(
+            f"[{order.status}] {order.quantity} {order.symbol} @ ${order.price:.2f} | "
+            f"New shares: {self.portfolio[symbol]['quantity']}, "
+            f"Avg cost: ${self.portfolio[symbol]['avg_price']:.2f}"
+        )
