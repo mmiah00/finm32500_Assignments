@@ -8,6 +8,7 @@ import csv
 from models import MarketDataPoint, Order
 from data_loader import market_data_generator,generate_market_csv, read_market_data, generate_market_csv,read_market_data
 from reporting import write_markdown_report
+from engine import ExecutionEngine
 
 def unit_test():
     order = Order("AAPL", 10, 150.0, "buy") #mutable
@@ -44,5 +45,7 @@ if __name__ == "__main__":
     #print(points[0:3])
     positions={'AAPL': {'quantity': 0, 'avg_price': 0.0}} #dict
 
-    write_markdown_report(points)
+    strategies = None # NEED TO UPDATE 
+    engine = ExecutionEngine(points, strategies) 
+    write_markdown_report(engine)
     

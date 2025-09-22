@@ -4,8 +4,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 from engine import ExecutionEngine
 
-def find_total_return (marketdatapoints): 
+def find_total_return (engine): 
     total  = 0 
+    marketdatapoints = engine.market_data 
 
     prev_order = marketdatapoints[0] 
     
@@ -19,8 +20,10 @@ def find_total_return (marketdatapoints):
     return total  
 
 
-def calc_periodic_returns(marketdatapoints): 
+def calc_periodic_returns(engine): 
     # periodic return = ((end_val / beg_val) - 1) * 100% 
+
+    marketdatapoints = engine.market_data 
 
     periodic_returns = [] 
 
@@ -36,8 +39,10 @@ def calc_periodic_returns(marketdatapoints):
 
     return periodic_returns  
 
-def calc_sharpe_ratio(marketdatapoints, periodic_returns): 
-    num_datapoints = len(marketdatapoints)
+def calc_sharpe_ratio(engine, periodic_returns): 
+    marketdatapoints = engine.market_data
+
+    num_datapoints = len(marketdatapoints) 
 
     Rp = 0 # Portfolio's Average Return (Rp) 
     Rf = 0.0389 # Risk-Free Rate (Rf), for our purposes we will use the yield on a 3-month U.S. Treasury bill as the risk-free rate. The current 3 Month Treasury Bill Rate, as of September 19, 2025, is 3.89%
@@ -50,7 +55,7 @@ def calc_sharpe_ratio(marketdatapoints, periodic_returns):
     Rp /= num_datapoints 
 
     # calculate Sigma 
-    mean_return = find_total_return (marketdatapoints) / num_datapoints
+    mean_return = find_total_return (engine) / num_datapoints
     
     for mdp in marketdatapoints: 
         sigma += (mdp.price - mean_return) ** 2 # calculate squared variances for each data point 
@@ -62,8 +67,10 @@ def calc_sharpe_ratio(marketdatapoints, periodic_returns):
     
 
 
-def max_drawdown (marketdatapoints): 
+def max_drawdown (engine): 
     mdd = 0 
+
+    marketdatapoints = engine.market_data 
 
     portfolio_val = marketdatapoints[0].price 
 
@@ -84,8 +91,10 @@ def max_drawdown (marketdatapoints):
 
     return mdd 
 
-def save_equity_plot(marketdatapoints, filename="equity_curve.png"):
+def save_equity_plot(engine, filename="equity_curve.png"):
     y = [] 
+
+    marketdatapoints = engine.market_data 
 
     portfolio_val = 0 
 
@@ -106,15 +115,17 @@ def save_equity_plot(marketdatapoints, filename="equity_curve.png"):
     plt.close()
     return filename
 
-def write_markdown_report(marketdatapoints, outpath="performance.md"):
-    total_return = find_total_return (marketdatapoints)
-    periodic_returns = calc_periodic_returns(marketdatapoints)
-    sharpe = calc_sharpe_ratio (marketdatapoints, periodic_returns)
-    max_dd = max_drawdown (marketdatapoints)
+def write_markdown_report(engine, outpath="performance.md"):
+    marketdatapoints = engine.market_data 
+
+    total_return = find_total_return (engine)
+    periodic_returns = calc_periodic_returns(engine)
+    sharpe = calc_sharpe_ratio (engine, periodic_returns)
+    max_dd = max_drawdown (engine)
 
     periodic_returns = pd.DataFrame(periodic_returns) # converting from a list to a Pandas Dataframe
 
-    img_path = save_equity_plot(marketdatapoints)
+    img_path = save_equity_plot(engine)
 
     with open(outpath, "w") as f:
         f.write("# Backtest Performance Report\n\n")
