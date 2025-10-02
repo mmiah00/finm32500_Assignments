@@ -9,9 +9,9 @@ class PriceLoader:
         self.end_date = end 
         self.tickers = tickers 
     
-    def load_tickers(self, list_of_tickers=""): 
-        # given a url list_of_tickers with a list of all the tickers that you are interested in pulling, add those tickers from the url to self.tickers
-        tables = pd.read_html(list_of_tickers)
+    def load_tickers(self, tickers_url="https://en.wikipedia.org/wiki/List_of_S%26P_500_companies"): 
+        # given a url tickers_url with a list of all the tickers that you are interested in pulling, add those tickers from the url to self.tickers
+        tables = pd.read_html(tickers_url)
         tickers_ = tables[0]["Symbol"].to_list()
         tickers_ = [t.replace(".", "-") for t in tickers_]  # adjust ticker names for consistenc
         self.tickers = tickers_ 
