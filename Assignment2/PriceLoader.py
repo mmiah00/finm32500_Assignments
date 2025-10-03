@@ -1,6 +1,7 @@
 import pandas as pd 
 import yfinance as yf 
-
+import requests
+    
 class PriceLoader: 
 
     def __init__ (self, filepath="data/", start="2005-01-01", end="2025-01-01", tickers =[]): 
@@ -11,19 +12,50 @@ class PriceLoader:
     
     def load_tickers(self, tickers_url="https://en.wikipedia.org/wiki/List_of_S%26P_500_companies"): 
         # given a url tickers_url with a list of all the tickers that you are interested in pulling, add those tickers from the url to self.tickers
+        
+        '''
         tables = pd.read_html(tickers_url)
         tickers_ = tables[0]["Symbol"].to_list()
         tickers_ = [t.replace(".", "-") for t in tickers_]  # adjust ticker names for consistenc
         self.tickers = tickers_ 
+        '''
+
+        headers = {
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
+        }
+
+        try:
+            response = requests.get(tickers_url, headers=headers)
+            response.raise_for_status()  # raise an error if request fails
+
+            # read HTML tables from the page content
+            tables = pd.read_html(response.text)
+
+            # the first table contains the tickers
+            tickers_ = tables[0]["Symbol"].to_list()
+
+            # adjust ticker format for yfinance (replace '.' with '-')
+            tickers_ = [t.replace(".", "-") for t in tickers_]
+
+            self.tickers = tickers_
+            print(f"Loaded {len(self.tickers)} tickers successfully.")
+            return self.tickers
+
+        except requests.HTTPError as e:
+            print(f"HTTP error: {e}")
+        except Exception as e:
+            print(f"Error loading tickers: {e}")
+
     
     def download_ticker_prices(self, batch_size=25): 
-        if tickers: # make sure tickers is not empty 
+        if self.tickers: # make sure tickers is not empty 
 
             i = 0 
             file_num = 1
             while i < len(self.tickers): 
+                print(f"Downloading batch {file_num}")
                 tickers_batch = self.tickers[i:i+batch_size]
-                data = yf.download(tickers=self.tickers, start = self.start_date, end=self.end_date, group_by="ticker", auto_adjust=True)
+                data = yf.download(tickers=tickers_batch, start = self.start_date, end=self.end_date, group_by="ticker", auto_adjust=True)
                 
 
                 # download each ticker in its own file 
@@ -31,7 +63,8 @@ class PriceLoader:
                     try: 
 
                         df = data[ticker]
-                        df = df['Adj Close']
+                        # print(df.head(5))
+                        df = df[['Close']]
                         df = df.dropna() # drop null values 
                         
                         # save to its own file 
@@ -41,6 +74,7 @@ class PriceLoader:
                         print(f"Error saving {ticker} data: {e}")
                 
                 i += batch_size 
+                file_num += 1
 
     def get_ticker_data (self, ticker, path): 
         # read in data of given ticker from data in local storage @ location path
@@ -56,3 +90,10 @@ class PriceLoader:
             except FileNotFoundError:
                 print(f"Missing {t}")
         return pd.DataFrame(dfs) 
+    
+if __name__ == "__main__":
+    loader = PriceLoader()
+    ticks = loader.load_tickers() 
+
+    loader.download_ticker_prices() 
+    
