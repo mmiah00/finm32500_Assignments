@@ -19,52 +19,35 @@ class BenchmarkStrategy(Strategy):
         self.allocation_per_ticker = allocation_per_ticker
         self.max_participation = max_participation
 
-    def run(self, price_data):
-        # price_data is a dataframe with columns 
+    def run(self, price_data, start_date="2005-01-03"):
+        """
+        Args: 
+            price_data: dictionary generated in PriceLoader.py, key = ticker name (str) and value = ticker prices (Pandas Series)
+            start_date: date we are trading on (should be the first day only)
+        """
+        dates = None 
 
-        def sort_dates (): 
-            dates = set() 
+        for ticker, price_series in price_data.items(): 
+            price = price_series['Close'].loc[start_date]
 
-            for df in price_data: 
-                dates.add(df.index)
+            if dates == None: 
+                dates = price_series['Date']
+
+            X = self.shares # num shares 
+
+            if self.allocation_per_ticker: 
+                # fixed dollar allocation per ticker 
+                X = int(self.allocation_per_ticker // open_price)
             
-            dates = sorted(dates) # O(n log n)
+            cost = price * X 
 
-            return dates 
+            if cost <= self.cash: 
+                self.cash -= cost 
+                self.portfolio[ticker] = X 
+            
+        self._record (start_date, price_data)
 
-        dates = sort_dates() 
-        first_day = dates[0] 
+        for date in dates: 
+            if date != start_date: 
+                self._record(date, price_data)
 
-        for df in price_data: 
-
-
-
-        for ticker, df in price_data.items():
-            if first_day not in df.index:
-                continue
-
-            open_price = df.loc[first_day, "Open"]
-            adv = df["Volume"].rolling(20, min_periods=1).mean().iloc[0]  # proxy ADV
-            max_shares = int(self.max_participation * adv)
-
-            if self.allocation_per_ticker is not None:
-                # Fixed dollar allocation per ticker
-                shares_to_buy = int(self.allocation_per_ticker // open_price)
-            elif self.shares is not None:
-                # Fixed X shares
-                shares_to_buy = self.shares
-            else:
-                # Default: equal-weight allocation across all tickers
-                shares_to_buy = int((self.initial_cash / len(price_data)) // open_price)
-
-            # Enforce participation cap
-            shares_to_buy = min(shares_to_buy, max_shares)
-
-            cost = shares_to_buy * open_price
-            if cost <= self.cash and shares_to_buy > 0:
-                self.cash -= cost
-                self.portfolio[ticker] = shares_to_buy
-
-        # --- Daily portfolio valuation ---
-        for date in all_dates:
-            self._record(date, price_data)
