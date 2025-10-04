@@ -71,22 +71,37 @@ class PriceLoader:
 
     def get_ticker_data (self, ticker, path): 
         # read in data of given ticker from data in local storage @ location path
-        if not path.exists():
-            raise FileNotFoundError(f"No data file found for {ticker}")
-        return pd.read_parquet(filepath)
+        
+        # if not path.exists():
+        #     raise FileNotFoundError(f"No data file found for {ticker}")
+        # return pd.read_parquet(filepath)
+
+        try: 
+            return pd.read_parquet(path)
+        except FileNotFoundError as e: 
+            print (f"File at location \'{path}\' not found for {ticker}")
     
     def get_select_ticker_data (self, tickers): 
+        # can be used to get dataframe data for all tickers or of select group of tickers as specified by the tickers argument 
         dfs = {}
         for t in tickers:
             try:
-                dfs[t] = self.load(t)["AdjClose"]
+                path = f"{self.filepath}{t}_{self.start_date}_to_{self.end_date}.parquet" 
+                dfs[t] = self.get_ticker_data(t, path)["Close"]
             except FileNotFoundError:
                 print(f"Missing {t}")
-        return pd.DataFrame(dfs) 
+        return pd.DataFrame(dfs) # returns a dictionary of key = ticker name (str) and value = ticker prices (Pandas Series)
+ 
     
 if __name__ == "__main__":
     loader = PriceLoader()
     ticks = loader.load_tickers() 
 
     loader.download_ticker_prices() 
+    data = loader.get_select_ticker_data(loader.tickers)
     
+    # for ticker in data: 
+    #     ticker_data = data[ticker]
+    #     print(ticker_data.head())
+    #     print("===========")
+
