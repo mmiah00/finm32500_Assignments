@@ -97,11 +97,12 @@ if __name__ == "__main__":
     loader = PriceLoader()
     ticks = loader.load_tickers() 
 
-    loader.download_ticker_prices() 
+    # loader.download_ticker_prices() 
     data = loader.get_select_ticker_data(loader.tickers)
     
-    # for ticker in data: 
-    #     ticker_data = data[ticker]
-    #     print(ticker_data.head())
-    #     print("===========")
+    for ticker in data: 
+        print(f"== Data for ticker: {ticker} ==")
+        ticker_data = data[ticker]
+        print(ticker_data.head())
+        print("===========")
 

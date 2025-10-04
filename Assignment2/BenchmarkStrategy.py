@@ -2,7 +2,7 @@ import pandas as pd
 from Strategy import Strategy
 
 class BenchmarkStrategy(Strategy):
-    def __init__(self, initial_cash=1000000, shares=None, allocation_per_ticker=None, max_participation=0.05):
+    def __init__(self, initial_cash=1000000, shares=5, allocation_per_ticker=None, max_participation=0.05):
         """
         Benchmark Strategy
         - Buy X shares OR allocate fixed $ amount per ticker (on first day only).
@@ -27,11 +27,13 @@ class BenchmarkStrategy(Strategy):
         """
         dates = None 
 
+        print("Running Benchmark Strategy...")
         for ticker, price_series in price_data.items(): 
-            price = price_series['Close'].loc[start_date]
+            
+            price = price_series[start_date] 
 
-            if dates == None: 
-                dates = price_series['Date']
+            if type(dates) != pd.Series: 
+                dates = price_series.index #price_series['Date']
 
             X = self.shares # num shares 
 
@@ -39,6 +41,11 @@ class BenchmarkStrategy(Strategy):
                 # fixed dollar allocation per ticker 
                 X = int(self.allocation_per_ticker // open_price)
             
+            if price == None or X == None : 
+                continue 
+
+            print(f"Buying {X} shares of {ticker} at price {price}.")
+
             cost = price * X 
 
             if cost <= self.cash: 
