@@ -25,4 +25,4 @@ class Strategy:
 
     def get_results(self):
         """Return portfolio performance as a DataFrame."""
-        return pd.DataFrame(self.history, columns=["Date", "PortfolioValue", "Cash", "HoldingsValue"]).set_index("Date")
+        return pd.DataFrame(self.history, columns=["Date", "Portfolio Value", "Cash", "HoldingsValue"]).set_index("Date")
