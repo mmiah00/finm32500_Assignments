@@ -23,15 +23,6 @@ class Strategy:
         total_value = self.cash + holdings_value
         self.history.append((date, total_value, self.cash, holdings_value))
 
-        # """Helper: record portfolio value on a given date."""
-        # holdings_value = 0
-        # for ticker, shares in self.portfolio.items():
-        #     if date in price_data[ticker].index:
-        #         price = price_data[date] #price_data[ticker].loc[date, "Price"]
-        #         holdings_value += shares * price
-        # total_value = self.cash + holdings_value
-        # self.history.append((date, total_value, self.cash, holdings_value))
-
     def get_results(self):
         """Return portfolio performance as a DataFrame."""
         return pd.DataFrame(self.history, columns=["Date", "PortfolioValue", "Cash", "HoldingsValue"]).set_index("Date")
