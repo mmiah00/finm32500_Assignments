@@ -44,7 +44,7 @@ class BenchmarkStrategy(Strategy):
             if price == None or X == None : 
                 continue 
 
-            print(f"Buying {X} shares of {ticker} at price {price}.")
+            # print(f"Buying {X} shares of {ticker} at price {price}.")
 
             cost = price * X 
 
