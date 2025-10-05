@@ -44,15 +44,13 @@ class BenchmarkStrategy(Strategy):
             if price == None or X == None : 
                 continue 
 
-            # print(f"Buying {X} shares of {ticker} at price {price}.")
-
-            cost = price * X 
-
-            if cost <= self.cash: 
-                self.cash -= cost 
-                self.portfolio[ticker] = X 
+            try: 
+                self._buy(ticker, price, X, start_date)
+                self._record (start_date, price_data)
+            except Exception as e: 
+                print (f"Couldn't buy {X} shares of {ticker} at price {price}. Not enough cash.")
             
-        self._record (start_date, price_data)
+        # self._record (start_date, price_data)
 
         for date in dates: 
             if date != start_date: 

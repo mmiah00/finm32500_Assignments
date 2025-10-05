@@ -22,6 +22,15 @@ class Strategy:
 
         total_value = self.cash + holdings_value
         self.history.append((date, total_value, self.cash, holdings_value))
+    
+    def _buy(self, ticker, ticker_price, amount, date):
+        cost = ticker_price * amount 
+
+        if cost <= self.cash: 
+            self.cash -= cost 
+            self.portfolio[ticker] = amount 
+        else: 
+            raise ValueError(f"Not enough cash to buy {amount} shares of {ticker}. Cash amount: {self.cash}. Purchase attempted: {cost}.") 
 
     def get_results(self):
         """Return portfolio performance as a DataFrame."""

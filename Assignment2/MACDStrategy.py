@@ -1,14 +1,16 @@
+
+
 import pandas as pd
 import numpy as np
 from Strategy import Strategy
 
-class VolatilityBreakoutStrategy(Strategy):
+class MACDStrategy(Strategy):
 
     def __init__ (self, initial_cash=1000000): 
         """
-        Volatility Breakout Strategy 
-        - Buy if daily return > rolling 20-day std dev
-        
+        MACD Strategy
+        - Buy if MACD line crosses above signal line Price + momentum
+
         Args:
             initial_cash: starting cash
         """
@@ -16,6 +18,12 @@ class VolatilityBreakoutStrategy(Strategy):
     
     def run(self, price_data): 
         for ticker, price_series in price_data.items(): 
+            ema12s = price_series.ewm(span=12, adjust=False).mean() 
+            ema26s = price_series.ewm(span=26, adjust=False).mean() 
+            MACD = ema12s - ema26s 
+
+
+
             rolling_vols = price_series.rolling(window=20).std()
             returns = price_series.pct_change()
             dates = price_series.index 

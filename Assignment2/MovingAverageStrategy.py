@@ -15,6 +15,28 @@ class MovingAverageStrategy(Strategy):
         super().__init__(initial_cash)
     
     def run(self, price_data): 
+        for ticker, price_series in price_data.items(): 
+            rolling_avgs20 = price_series.rolling(window=20).mean()
+            rolling_avgs50 = price_series.rolling(window=50).mean()
+            dates = price_series.index 
+
+            for i in range(len(rolling_avgs20)): 
+                if rolling_avgs20.iloc[i] > rolling_avgs50.iloc[i]: 
+                    # buy ticker 
+                    
+                    try: 
+                        self._buy(ticker, price_series.iloc[i], 1, dates[i])
+                        print (f"MA20 for {ticker} on day {dates[i]} ({rolling_avgs20.iloc[i]}) is greater than MA50 for {ticker} on day {dates[i]} ({rolling_avgs50.iloc[i]}). Buying signal.")
+                        self._record (dates[i], price_data)
+                    except Exception as e: 
+                        print (f"Not enough cash to make purchase of 1 share of {ticker} on {dates[i]}. Current cash balance: {self.cash}. Attempted purchase: {price_series.iloc[i]}")
+            print()
+
+
+
+
+
+        '''
         MA20 = {} # key = ticker, value = dict (key = date, value = 20-day moving average value)  
         MA50 = {} # key = ticker, value = dict (key = date, value = 50-day moving average value)  
         sums = {} # key = ticker, value = list -> [sum for ma20, sum for ma50]
@@ -23,7 +45,6 @@ class MovingAverageStrategy(Strategy):
         tickers = []
 
         for ticker, price_series in price_data.items(): 
-            print(f"Calculating MA for {ticker}")
             if type(dates) != pd.Series: 
                 dates = price_series.index #price_series['Date']
             tickers.append(ticker) 
@@ -36,7 +57,7 @@ class MovingAverageStrategy(Strategy):
             day = i + 1 # day 1 is at index 0, and so on 
             date = dates[i] 
 
-            # print(f"Today is day {day}, {date}.")
+            print(f"Today is day {day}, {date}.")
 
             for t in tickers: 
                 todays_price = price_data[t][date]
@@ -73,15 +94,17 @@ class MovingAverageStrategy(Strategy):
 
                     if avg1 > avg2: 
                         # buy ticker 
-                        cost = price_data[t][dates[i]]
+                        try: 
+                            price = price_data[t][dates[i]]
+                            self._buy(t, price, 1, dates[i])
+                            print(f"MA20 ({avg1}) is greater than MA50 ({avg2}). Buying 1 share of {t} on day {day} ({date}).")
+                            print() 
+                        except ValueError as e: 
+                            print (f"Couldn't buy 1 share of {t} at price {price}. Not enough cash.")
 
-                        if cost <= self.cash: 
-                            self.cash -= cost 
-                            self.portfolio[ticker] = 1
-                            print(f"MA20 ({avg1}) is greater than MA50 ({avg2}). Buying 1 share of {ticker} on day {day} ({date}).")
-            
             self._record (date, price_data)
             print("=========================================================")    
+        '''
 
 
 
