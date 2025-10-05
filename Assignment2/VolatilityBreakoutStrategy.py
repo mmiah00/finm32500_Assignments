@@ -25,7 +25,8 @@ class VolatilityBreakoutStrategy(Strategy):
                     # buy ticker 
                     try:
                         self._buy(ticker, price_series.iloc[i], 1, dates[i])
+                        self._record (dates[i], price_data)
                     except Exception as e: 
                         print (f"Couldn't buy 1 share of {ticker} at price {price_series.iloc[i]}. Current cash: {self.cash}. Attempted purchase amount: {price_series.iloc[i]}.")
 
-                self._record (dates[i], price_data)
+                # self._record (dates[i], price_data)

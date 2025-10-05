@@ -1,0 +1,44 @@
+
+
+import pandas as pd
+import numpy as np
+from Strategy import Strategy
+
+class RSIStrategy(Strategy):
+
+    def __init__ (self, initial_cash=1000000, period_length=14): 
+        """
+        RSI Strategy
+        - Buy if RSI < 30
+
+        Args:
+            initial_cash: starting cash
+            period_length: length of the period we are calculating RSI over 
+        """
+        super().__init__(initial_cash)
+        self.period_length = period_length
+    
+    def run(self, price_data): 
+        for ticker, price_series in price_data.items(): 
+            deltas = price_series.diff(1) 
+            gains = [0 for i in range (len(deltas)) if deltas.iloc[i] < 0 else deltas.iloc[i]]
+            losses = [0 for i in range (len(deltas)) if deltas.iloc[i] > 0 else deltas.iloc[i]]
+            
+            gains = pd.Series(gains) 
+            losses = pd.Series(losses) 
+
+            avg_gains = gains.rolling(window=self.period_length).mean() 
+            avg_losses = losses.rolling(window=self.period_length).mean()
+
+            rs = avg_gains / avg_losses 
+
+            rsi = 100 - (100 / (1 + df['rs']))
+
+            for i in range(len(rsi)): 
+                if rsi.iloc[i] < 30: 
+                    #buy signal 
+                    try:
+                        self._buy(ticker, price_series.iloc[i], 1, dates[i])
+                        self._record (dates[i], price_data)
+                    except Exception as e: 
+                        print (f"Couldn't buy 1 share of {ticker} at price {price_series.iloc[i]}. Current cash: {self.cash}. Attempted purchase amount: {price_series.iloc[i]}.")
