@@ -18,6 +18,7 @@ class BenchmarkStrategy(Strategy):
         self.shares = shares # num shares 
         self.allocation_per_ticker = allocation_per_ticker
         self.max_participation = max_participation
+        # self.cash = initial_cash
 
     def run(self, price_data, start_date="2005-01-03"):
         """

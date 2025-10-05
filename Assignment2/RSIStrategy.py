@@ -17,12 +17,13 @@ class RSIStrategy(Strategy):
         """
         super().__init__(initial_cash)
         self.period_length = period_length
+        # self.cash = initial_cash
     
     def run(self, price_data): 
         for ticker, price_series in price_data.items(): 
             deltas = price_series.diff(1) 
-            gains = [0 for i in range (len(deltas)) if deltas.iloc[i] < 0 else deltas.iloc[i]]
-            losses = [0 for i in range (len(deltas)) if deltas.iloc[i] > 0 else deltas.iloc[i]]
+            gains = [0 if deltas.iloc[i] < 0 else deltas.iloc[i] for i in range (len(deltas))]
+            losses = [0 if deltas.iloc[i] > 0 else deltas.iloc[i] for i in range (len(deltas))]
             
             gains = pd.Series(gains) 
             losses = pd.Series(losses) 

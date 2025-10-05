@@ -13,15 +13,20 @@ class VolatilityBreakoutStrategy(Strategy):
             initial_cash: starting cash
         """
         super().__init__(initial_cash)
+        # self.cash = initial_cash 
     
     def run(self, price_data): 
         for ticker, price_series in price_data.items(): 
-            rolling_vols = price_series.rolling(window=20).std()
             returns = price_series.pct_change()
+            rolling_vols = returns.rolling(window=20).std()
+
             dates = price_series.index 
 
             for i in range (len(rolling_vols)): 
-                if returns.iloc[i] > rolling_vols.iloc[i]: 
+                if pd.isna(returns.iloc[i]) or pd.isna(rolling_vols.iloc[i]):
+                    continue
+
+                if returns.shift(1).iloc[i] > rolling_vols.shift(1).iloc[i]: # act on previous day's signal 
                     # buy ticker 
                     try:
                         self._buy(ticker, price_series.iloc[i], 1, dates[i])

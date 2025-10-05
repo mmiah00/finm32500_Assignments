@@ -15,6 +15,7 @@ class MACDStrategy(Strategy):
             initial_cash: starting cash
         """
         super().__init__(initial_cash)
+        # self.cash = initial_cash
     
     def run(self, price_data): 
         for ticker, price_series in price_data.items(): 

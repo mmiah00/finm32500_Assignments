@@ -28,7 +28,7 @@ class Strategy:
 
         if cost <= self.cash: 
             self.cash -= cost 
-            self.portfolio[ticker] = amount 
+            self.portfolio[ticker] = self.portfolio.get(ticker, 0) + amount
         else: 
             raise ValueError(f"Not enough cash to buy {amount} shares of {ticker}. Cash amount: {self.cash}. Purchase attempted: {cost}.") 
 
