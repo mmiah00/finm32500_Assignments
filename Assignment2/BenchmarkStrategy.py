@@ -56,4 +56,7 @@ class BenchmarkStrategy(Strategy):
         for date in dates: 
             if date != start_date: 
                 self._record(date, price_data)
+                self._log_signal(ticker, date, 0)
+            else: 
+                self._log_signal(ticker, date, 1)
 
