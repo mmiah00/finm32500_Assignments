@@ -5,7 +5,7 @@ class Strategy:
         self.initial_cash = initial_cash
         self.cash = initial_cash
         self.portfolio = {}  # ticker -> shares held
-        self.history = []    # track (date, portfolio_value, cash, holdings_value)
+        self.history = []    # track (date, portfolio_value, cash, holdings_value, pnl)
 
     def run(self, price_data):
         """
@@ -21,7 +21,9 @@ class Strategy:
             holdings_value += shares*price
 
         total_value = self.cash + holdings_value
-        self.history.append((date, total_value, self.cash, holdings_value))
+        pnl = total_value - self.initial_cash
+        
+        self.history.append((date, total_value, self.cash, holdings_value, pnl))
     
     def _buy(self, ticker, ticker_price, amount, date):
         cost = ticker_price * amount 
@@ -34,4 +36,12 @@ class Strategy:
 
     def get_results(self):
         """Return portfolio performance as a DataFrame."""
-        return pd.DataFrame(self.history, columns=["Date", "Portfolio Value", "Cash", "HoldingsValue"]).set_index("Date")
+        return pd.DataFrame(self.history, columns=["Date", "Portfolio_Value", "Cash", "HoldingsValue", "PnL"].set_index("Date"))
+
+    def get_results(self):
+        """Return portfolio performance as a DataFrame."""
+        df = pd.DataFrame(self.history, columns=["Date", "Portfolio_Value", "Cash", "HoldingsValue", "PnL"]).set_index("Date")
+
+        df["Cumulative_PnL"] = df["PnL"].cumsum()
+        
+        return df
