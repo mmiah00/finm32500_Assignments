@@ -16,7 +16,7 @@ class VolatilityBreakoutStrategy(Strategy):
         # self.cash = initial_cash 
     
     def run(self, price_data): 
-        print ("Running Volatility Breakout Strategy..")
+        # print ("Running Volatility Breakout Strategy..")
 
         
         returns_ = {} # key = ticker, value = daily returns 

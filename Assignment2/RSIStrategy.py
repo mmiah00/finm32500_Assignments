@@ -21,7 +21,7 @@ class RSIStrategy(Strategy):
     
     def run(self, price_data): 
 
-        print ("Running RSI Strategy...")
+        # print ("Running RSI Strategy...")
 
         RSIs = {} # key = ticker, value = RSI value for each ticker 
 

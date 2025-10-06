@@ -16,7 +16,7 @@ class MovingAverageStrategy(Strategy):
         # self.cash = initial_cash
     
     def run(self, price_data): 
-        print ("Running Moving Average Strategy...")
+        # print ("Running Moving Average Strategy...")
 
         for ticker, price_series in price_data.items(): 
             ma20 = price_series.rolling(window=20).mean()

@@ -28,7 +28,7 @@ class BenchmarkStrategy(Strategy):
         """
         dates = None 
 
-        print("Running Benchmark Strategy...")
+        # print("Running Benchmark Strategy...")
         for ticker, price_series in price_data.items(): 
             
             price = price_series[start_date] 

@@ -18,7 +18,7 @@ class MACDStrategy(Strategy):
         # self.cash = initial_cash
     
     def run(self, price_data): 
-        print ("Running MACD Strategy...")
+        # print ("Running MACD Strategy...")
         MACDs = {} # key = ticker, value = MACD values 
         signal_lines = {} # key = ticker, value = signal line value 
 
