@@ -33,7 +33,7 @@ class RSIStrategy(Strategy):
 
             rs = avg_gains / avg_losses 
 
-            rsi = 100 - (100 / (1 + df['rs']))
+            rsi = 100 - (100 / (1 + rs))
 
             for i in range(len(rsi)): 
                 if rsi.iloc[i] < 30: 
