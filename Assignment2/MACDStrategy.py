@@ -21,13 +21,15 @@ class MACDStrategy(Strategy):
         # print ("Running MACD Strategy...")
         MACDs = {} # key = ticker, value = MACD values 
         signal_lines = {} # key = ticker, value = signal line value 
+        dates = None 
 
         for ticker, price_series in price_data.items(): 
+            dates = price_series.index
             ema12s = price_series.ewm(span=12, adjust=False).mean() 
             ema26s = price_series.ewm(span=26, adjust=False).mean() 
 
             MACDs[ticker] = ema12s - ema26s 
-            signal_line[ticker] = MACD.ewm(span=9, adjust=False).mean() 
+            signal_lines[ticker] = MACDs[ticker].ewm(span=9, adjust=False).mean() 
 
 
         for i in range (len(dates)): 

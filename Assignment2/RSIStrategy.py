@@ -24,10 +24,11 @@ class RSIStrategy(Strategy):
         # print ("Running RSI Strategy...")
 
         RSIs = {} # key = ticker, value = RSI value for each ticker 
-
+        dates = None 
 
         for ticker, price_series in price_data.items(): 
             deltas = price_series.diff(1) 
+            dates = price_series.index 
             gains = [0 if deltas.iloc[i] < 0 else deltas.iloc[i] for i in range (len(deltas))]
             losses = [0 if deltas.iloc[i] > 0 else deltas.iloc[i] for i in range (len(deltas))]
             
