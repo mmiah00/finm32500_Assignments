@@ -1,17 +1,10 @@
 import sys
 import pandas as pd 
 from collections import defaultdict
-from dataclasses import dataclass
 from datetime import datetime
 
 df = pd.read_csv ('market_data.csv')
 
-
-@dataclass(frozen=True)
-class MarketDataPoint:
-    timestamp: datetime
-    symbol: str
-    price: float
     
 MDPs = []  # list of market data point objects generated from market data csv 
 MDPs_by_ticker = defaultdict(list) # dictionary with key = ticker, value = list of MDPs for that ticker 
