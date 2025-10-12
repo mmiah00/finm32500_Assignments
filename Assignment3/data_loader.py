@@ -2,13 +2,14 @@ import sys
 import pandas as pd 
 from collections import defaultdict
 from dataclasses import dataclass
+from datetime import datetime
 
 df = pd.read_csv ('market_data.csv')
 
 
 @dataclass(frozen=True)
 class MarketDataPoint:
-    timestamp: str
+    timestamp: datetime
     symbol: str
     price: float
     
@@ -17,7 +18,7 @@ MDPs = []  # list of market data point objects generated from market data csv
 
 for index, row in df.iterrows():
     try: 
-        mdp = MarketDataPoint (row['timestamp'], row['symbol'], row['price'])
+        mdp = MarketDataPoint (pd.to_datetime(row['timestamp']), row['symbol'], row['price'])
         MDPs.append(mdp) 
         # print(f"Added mdp. Timestamp : {row['timestamp']} | Symbol : {row['symbol']} | Price : {row['price']}")
         # MDPs_by_ticker[row['symbol']].append(mdp)
