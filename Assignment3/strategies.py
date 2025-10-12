@@ -107,7 +107,50 @@ class WindowedMovingAverageStrategy (Strategy):
         #                               either m or k. 
     
 
+class OptimizedMovingAverageStrategy(Strategy):
 
+    def __init__ (self, window_size=20): 
+        self.window_size = window_size 
+    
+    def generate_signals(self, data): 
+        # data is a dict where key = ticker, value = list of MDPs for that ticker 
+        
+        signals = defaultdict (list) # key = ticker, value = list of tickers (i.e. ["BUY", "HOLD", "HOLD", "SELL", etc]
+        
+        
+        for ticker in data: 
+            mdps = data[ticker]
+            
+            prev_avg = 0 
+
+            for i in range (len(mdps)): 
+                mdp = mdps[i] 
+                price = mdp.price 
+                avg = None 
+
+                if i < 1: 
+                    prev_avg = price 
+                    signals[ticker].append("HOLD")
+                elif i < self.window_size: 
+                    new_avg = ((prev_avg) * i + price) / (i + 1)
+                    if new_avg > price: 
+                        signals[ticker].append("BUY")
+                    elif new_avg < price: 
+                        signals[ticker].append("SELL")
+                    else: 
+                        signals[ticker].append("HOLD")
+                    prev_avg = new_avg 
+                else: 
+                    new_avg = ((prev_avg) * self.window_size - mdps[i - self.window_size].price + price) / self.window_size
+                    if new_avg > price: 
+                        signals[ticker].append("BUY")
+                    elif new_avg < price: 
+                        signals[ticker].append("SELL")
+                    else: 
+                        signals[ticker].append("HOLD")
+                    prev_avg = new_avg 
+                
+        return signals 
 
 # NAIVE MA TESTING
 # from data_loader import MDPs_by_ticker
