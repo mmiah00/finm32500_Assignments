@@ -6,23 +6,28 @@ class NaiveMovingAverageStrategy(Strategy):
 
     def __init__ (self, window_size=20): 
         self.window_size = window_size 
-        self.prices = []
     
-    def generate_signals(self, mdps): 
-        signals = [] 
-
-        for mdp in mdps: 
-            self.prices.append(mdp.price)
-            if len(self.prices) < self.window_size: 
-                signals.append('HOLD')
-            else: 
-                avg = np.mean(self.prices[-self.window_size:]) # last k elements, which is the size of the window 
-                if mdp.price > avg: 
-                    signals.append('BUY')
-                elif mdp.price < avg: 
-                    signals.append('SELL')
-                else: 
+    def generate_signals(self, data): 
+        # data is a dict where key = ticker, value = list of MDPs for that ticker 
+        
+        signals = defaultdict (list) # key = ticker, value = list of tickers (i.e. ["BUY", "HOLD", "HOLD", "SELL", etc])
+        
+        for ticker in data: 
+            mdps = data[ticker]
+            prices = [] 
+        
+            for mdp in mdps: 
+                prices.append(mdp.price)
+                if len(prices) < self.window_size: 
                     signals.append('HOLD')
+                else: 
+                    avg = np.mean(prices[-self.window_size:]) # last k elements, which is the size of the window 
+                    if mdp.price > avg: 
+                        signals.append('BUY')
+                    elif mdp.price < avg: 
+                        signals.append('SELL')
+                    else: 
+                        signals.append('HOLD')
                 
         return signals 
 
