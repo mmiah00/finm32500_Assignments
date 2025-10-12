@@ -1,7 +1,6 @@
 from dataclasses import dataclass
+from datetime import datetime
 from abc import ABC, abstractmethod
-from data_loader import MarketDataPoint
-
 
 @dataclass(frozen=True)
 class MarketDataPoint:
