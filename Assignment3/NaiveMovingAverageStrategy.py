@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+from collections import defaultdict
 from Strategy import Strategy
 
 class NaiveMovingAverageStrategy(Strategy):
@@ -19,15 +20,15 @@ class NaiveMovingAverageStrategy(Strategy):
             for mdp in mdps: 
                 prices.append(mdp.price)
                 if len(prices) < self.window_size: 
-                    signals.append('HOLD')
+                    signals[ticker].append('HOLD')
                 else: 
                     avg = np.mean(prices[-self.window_size:]) # last k elements, which is the size of the window 
                     if mdp.price > avg: 
-                        signals.append('BUY')
+                        signals[ticker].append('BUY')
                     elif mdp.price < avg: 
-                        signals.append('SELL')
+                        signals[ticker].append('SELL')
                     else: 
-                        signals.append('HOLD')
+                        signals[ticker].append('HOLD')
                 
         return signals 
 
@@ -39,7 +40,8 @@ class NaiveMovingAverageStrategy(Strategy):
         # Space Complexity: O(N) -> This algorithm stores the moving averages for each data point in an array, 
         #                           which takes up O(N) space.  
 
-# from data_loader import MDPs
+# TESTING
+# from data_loader import MDPs_by_ticker
 
 # strat = NaiveMovingAverageStrategy() 
-# print(strat.generate_signals(MDPs))
+# print(strat.generate_signals(MDPs_by_ticker))
