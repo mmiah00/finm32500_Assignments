@@ -34,7 +34,7 @@ class NaiveMovingAverageStrategy(Strategy):
         # Space Complexity: O(N) -> This algorithm stores the moving averages for each data point in an array, 
         #                           which takes up O(N) space.  
 
-from data_loader import MDPs
+# from data_loader import MDPs
 
-strat = NaiveMovingAverageStrategy() 
-print(strat.generate_signals(MDPs))
+# strat = NaiveMovingAverageStrategy() 
+# print(strat.generate_signals(MDPs))
