@@ -12,11 +12,11 @@ class NaiveMovingAverageStrategy(Strategy):
         signals = [] 
 
         for mdp in mdps: 
-            if len(prices) < self.window_size: 
-                self.prices.append(mdp.price)
+            self.prices.append(mdp.price)
+            if len(self.prices) < self.window_size: 
                 signals.append('HOLD')
             else: 
-                avg = np.mean(signals[-self.window_size:]) # last k elements, which is the size of the window 
+                avg = np.mean(self.prices[-self.window_size:]) # last k elements, which is the size of the window 
                 if mdp.price > avg: 
                     signals.append('BUY')
                 elif mdp.price < avg: 
@@ -33,3 +33,8 @@ class NaiveMovingAverageStrategy(Strategy):
 
         # Space Complexity: O(N) -> This algorithm stores the moving averages for each data point in an array, 
         #                           which takes up O(N) space.  
+
+from data_loader import MDPs
+
+strat = NaiveMovingAverageStrategy() 
+print(strat.generate_signals(MDPs))
