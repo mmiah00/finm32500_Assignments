@@ -1,6 +1,6 @@
 import multiprocessing
 import concurrent.futures
-
+from memory_profiler import profile
 
 def calc_MA_pd (symbol, df):
     # calculates 20-period moving average per symbol 
@@ -46,7 +46,8 @@ def calc_rolling_sharpe_pl (symbol, df, window=20):
 
 ##########################################################################################
 
-@profiler 
+
+@profile
 def threading_ex(): 
     result = []
     with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
@@ -56,12 +57,18 @@ def threading_ex():
     for r in result:
         print(r)
 
-@profiler 
+@profile
 def processing_ex(): 
     result2 = []
     with concurrent.futures.ProcessPoolExecutor(max_workers=5) as executor:
         executor.submit(calc_rolling_sharpe_pd, 5)
-        result.append(executor.map(calc_rolling_sharpe_pd, result2))
+        result2.append(executor.map(calc_rolling_sharpe_pd, result2))
 
     for r in result2:
         print(r)
+
+print("Testing threading on rolling sharpe calculation.")
+threading_ex() 
+
+print("Testing multiprocessing on rolling sharpe calculation.")
+processing_ex() 
