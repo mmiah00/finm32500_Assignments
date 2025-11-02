@@ -43,10 +43,11 @@ def processing():
         executor.submit(calc_metrics_seq, workers)
         results.append(executor.map(calc_metrics_seq, results))
 
-    for r in results:
-        print(r)
+    # for r in results:
+    #     print(r)
 
 if __name__ == '__main__':
+    filtered_df = calc_metrics_seq(pandas_df, "AAPL")
     processing()
-
+    filtered_df.to_json('part4.json') 
 
