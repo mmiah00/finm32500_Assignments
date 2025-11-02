@@ -1,4 +1,5 @@
 import pandas as pd
+import polars as pl
 import json
 import multiprocessing
 import concurrent.futures
@@ -13,4 +14,4 @@ if __name__ == '__main__':
     processing_pandas()
     processing_polars()
     filtered_df_pandas.to_json('part4_pandas.json') 
-    filtered_df_polars.to_json('part4_polars.json')
+    filtered_df_polars.write_json('part4_polars.json')
