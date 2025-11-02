@@ -37,6 +37,7 @@ workers = len(data["positions"])
 
 # parallel 
 
+@profile 
 def processing():
     results = []
     with concurrent.futures.ProcessPoolExecutor(max_workers=workers) as executor:
