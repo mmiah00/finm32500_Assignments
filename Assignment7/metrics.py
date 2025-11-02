@@ -22,18 +22,21 @@ tickers = polars_df['symbol'].unique()
 
 # Computing metrics using pandas(pd) 
 
+@profile
 def calc_MA_pd (symbol, df):
     # calculates 20-period moving average per symbol 
     df["Moving_MA"] = df[symbol].rolling(window=20).mean()
 
     return df 
 
+@profile
 def calc_rolling_std_pd (symbol, df, window=20):
     # calculates 20-period moving average per symbol 
     df["Rolling Std"] = df[symbol].rolling(window=20).std()
 
     return df 
 
+@profile
 def calc_rolling_sharpe_pd (symbol, df, window=20): 
     df["Rolling Sharpe"] = df['Moving_MA']/df['Rolling Std']
     return df
@@ -42,6 +45,7 @@ def calc_rolling_sharpe_pd (symbol, df, window=20):
 
 # Computing metrics using pandas(pd) 
 
+@profile
 def calc_MA_pl (symbol, df):
     # calculates 20-period moving average per symbol 
     new_df = df.with_columns(
@@ -50,6 +54,7 @@ def calc_MA_pl (symbol, df):
 
     return new_df 
 
+@profile
 def calc_rolling_std_pl (symbol, df, window=20):
     # calculates 20-period moving average per symbol 
     new_df = df.with_columns(
@@ -58,6 +63,7 @@ def calc_rolling_std_pl (symbol, df, window=20):
 
     return new_df 
 
+@profile
 def calc_rolling_sharpe_pl (symbol, df, window=20): 
     new_df = df.with_columns(
         (df["rolling_mean"] / df["rolling_std"]).alias("rolling_sharpe")
@@ -68,6 +74,7 @@ def calc_rolling_sharpe_pl (symbol, df, window=20):
 
 # Visualize results for one symbol (e.g., AAPL) using matplotlib or plotly.
 
+@profile
 def display_MA_plot(df, symbol):    
     plt.plot(df.index, df[symbol]["Moving_MA"])
 
