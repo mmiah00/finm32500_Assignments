@@ -32,20 +32,39 @@ def calc_metrics_seq_pandas(df, symbol, qty=1):
 
     return filtered_df
 
-def calc_metrics_seq_polars(df, symbol, qty=1):
-    '''
+def calc_metrics_seq_polars(df: pl.DataFrame, symbol: str, qty: int = 1) -> pl.DataFrame:
+    """
     value = quantity × latest price
     volatility = rolling standard deviation of returns
     drawdown = maximum peak-to-trough loss
-    '''
-    filtered_df = df[df['symbol'] == symbol]
-    latest_price = filtered_df.iloc[-1]
-    filtered_df['value'] = qty * latest_price 
-    filtered_df['returns'] = filtered_df["price"].pct_change() 
-    filtered_df['volatility'] = filtered_df['returns'].rolling(window=20).std()
+    """
+    # Filter to one symbol
+    filtered_df = df.filter(pl.col("symbol") == symbol)
+    
+    # Get latest price
+    latest_price = filtered_df.select(pl.col("price").last()).item()
 
-    cumulative_returns = (1 + filtered_df['returns']).cumprod() - 1
-    filtered_df['drawdown'] = (cumulative_returns - cumulative_returns.cummax()) / cumulative_returns.cummax()
+    # Compute metrics
+    filtered_df = (
+        filtered_df
+        .with_columns([
+            (pl.lit(qty) * latest_price).alias("value"),
+            pl.col("price").pct_change().alias("returns"),
+        ])
+        .with_columns([
+            pl.col("returns").rolling_std(window_size=20).alias("volatility"),
+        ])
+        .with_columns([
+            # cumulative returns = (1 + r).cumprod() - 1
+            ((1 + pl.col("returns")).cumprod() - 1).alias("cumulative_returns")
+        ])
+        .with_columns([
+            (
+                (pl.col("cumulative_returns") - pl.col("cumulative_returns").cummax())
+                / pl.col("cumulative_returns").cummax()
+            ).alias("drawdown")
+        ])
+    )
 
     return filtered_df
 
