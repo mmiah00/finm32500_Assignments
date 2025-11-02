@@ -72,3 +72,9 @@ threading_ex()
 
 print("Testing multiprocessing on rolling sharpe calculation.")
 processing_ex() 
+
+# Discuss GIL limitations and when multiprocessing is preferred.
+# Determining when to use multithreading vs. multiprocessing often comes down to the nature of the tasks we're solving. In the case of
+# multithreading, we need to be cautious of the GIL. This simplifies memory management but limits python usage to one thread. 
+# Part of the advantage to multithreading is more seamless communication between memory. To use multiprocessing we bypass this GIL
+# constraint and allow more independent process to run. This however makes memory communication more difficult.
