@@ -1,0 +1,71 @@
+'''
+Task: Compute rolling metrics per symbol:
+20-period moving average
+20-period rolling standard deviation
+Rolling Sharpe ratio (assume risk-free rate = 0)
+Expectations:
+Implement using both pandas and polars.
+Time each computation and compare performance.
+Visualize results for one symbol (e.g., AAPL) using matplotlib or plotly.
+Discuss syntax differences and performance tradeoffs.
+'''
+import pandas as pd 
+import polars as pl
+import datetime
+from memory_profiler import profile
+from data_loader import pandas_df, polars_df 
+
+tickers = polars_df['symbol'].unique() 
+
+##########################################################################################
+
+# Computing metrics using pandas(pd) 
+
+def calc_MA_pl (symbol, df):
+    # calculates 20-period moving average per symbol 
+    new_df = df.with_columns(
+        df[symbol].rolling_mean(window_size=window).alias("ma_20")
+    )
+
+    return new_df 
+
+def calc_rolling_std_pl (symbol, df, window=20):
+    # calculates 20-period moving average per symbol 
+    new_df = df.with_columns(
+        df[symbol].rolling_std(window_size=window).alias("std_20")
+    )
+
+    return new_df 
+
+def calc_rolling_sharpe_pl (symbol, df, window=20): 
+    new_df = df.with_columns(
+        (df["rolling_mean"] / df["rolling_std"]).alias("rolling_sharpe")
+    )
+    return new_df
+
+##########################################################################################
+
+# Computing metrics using pandas(pd) 
+
+def calc_MA_pl (symbol, df):
+    # calculates 20-period moving average per symbol 
+    new_df = df.with_columns(
+        df[symbol].rolling_mean(window_size=window).alias("ma_20")
+    )
+
+    return new_df 
+
+def calc_rolling_std_pl (symbol, df, window=20):
+    # calculates 20-period moving average per symbol 
+    new_df = df.with_columns(
+        df[symbol].rolling_std(window_size=window).alias("std_20")
+    )
+
+    return new_df 
+
+def calc_rolling_sharpe_pl (symbol, df, window=20): 
+    new_df = df.with_columns(
+        (df["rolling_mean"] / df["rolling_std"]).alias("rolling_sharpe")
+    )
+    return new_df
+
