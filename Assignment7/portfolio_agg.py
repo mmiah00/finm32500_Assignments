@@ -15,7 +15,7 @@ for position in data["positions"]:
 
 
 # sequential 
-def calc_metrics_seq (df, symbol, qty=1):
+def calc_metrics_seq_pandas(df, symbol, qty=1):
     '''
     value = quantity × latest price
     volatility = rolling standard deviation of returns
@@ -32,23 +32,49 @@ def calc_metrics_seq (df, symbol, qty=1):
 
     return filtered_df
 
-calc_metrics_seq(pandas_df, "AAPL") 
+def calc_metrics_seq_polars(df, symbol, qty=1):
+    '''
+    value = quantity × latest price
+    volatility = rolling standard deviation of returns
+    drawdown = maximum peak-to-trough loss
+    '''
+    filtered_df = df[df['symbol'] == symbol]
+    latest_price = filtered_df.iloc[-1]
+    filtered_df['value'] = qty * latest_price 
+    filtered_df['returns'] = filtered_df["price"].pct_change() 
+    filtered_df['volatility'] = filtered_df['returns'].rolling(window=20).std()
+
+    cumulative_returns = (1 + filtered_df['returns']).cumprod() - 1
+    filtered_df['drawdown'] = (cumulative_returns - cumulative_returns.cummax()) / cumulative_returns.cummax()
+
+    return filtered_df
+
+calc_metrics_seq_pandas(pandas_df, "AAPL") 
+calc_metrics_seq_polars(polars_df, "AAPL") 
 workers = len(data["positions"])
 
 # parallel 
 
 @profile 
-def processing():
+def processing_pandas():
     results = []
     with concurrent.futures.ProcessPoolExecutor(max_workers=workers) as executor:
-        executor.submit(calc_metrics_seq, workers)
-        results.append(executor.map(calc_metrics_seq, results))
+        executor.submit(calc_metrics_seq_pandas, workers)
+        results.append(executor.map(calc_metrics_seq_pandas, results))
 
-    # for r in results:
-    #     print(r)
+@profile 
+def processing_polars():
+    results = []
+    with concurrent.futures.ProcessPoolExecutor(max_workers=workers) as executor:
+        executor.submit(calc_metrics_seq_polars, workers)
+        results.append(executor.map(calc_metrics_seq_polars, results))
+
+filtered_df_pandas = calc_metrics_seq_pandas(pandas_df, "AAPL")
+filtered_df_polars = calc_metrics_seq_polars(polars_df, "AAPL")
 
 if __name__ == '__main__':
-    filtered_df = calc_metrics_seq(pandas_df, "AAPL")
-    processing()
-    filtered_df.to_json('part4.json') 
+    processing_pandas()
+    processing_polars()
+    filtered_df_pandas.to_json('part4_pandas.json') 
+    filtered_df_polars.to_json('part4_polars.json')
 
