@@ -44,18 +44,24 @@ def calc_rolling_sharpe_pl (symbol, df, window=20):
     )
     return new_df
 
-result = []
-with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
-    executor.submit(calc_rolling_sharpe_pd, 5)
-    result = executor.map(calc_rolling_sharpe_pd, result)
+##########################################################################################
 
-for r in result:
-    print(r)
+@profiler 
+def threading_ex(): 
+    result = []
+    with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
+        executor.submit(calc_rolling_sharpe_pd, 5)
+        result.append(executor.map(calc_rolling_sharpe_pd, result))
 
-result2 = []
-with concurrent.futures.ProcessPoolExecutor(max_workers=5) as executor:
-    executor.submit(calc_rolling_sharpe_pd, 5)
-    result = executor.map(calc_rolling_sharpe_pd, result2)
+    for r in result:
+        print(r)
 
-for r in result2:
-    print(r)
+@profiler 
+def processing_ex(): 
+    result2 = []
+    with concurrent.futures.ProcessPoolExecutor(max_workers=5) as executor:
+        executor.submit(calc_rolling_sharpe_pd, 5)
+        result.append(executor.map(calc_rolling_sharpe_pd, result2))
+
+    for r in result2:
+        print(r)
