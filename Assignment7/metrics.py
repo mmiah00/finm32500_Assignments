@@ -14,6 +14,7 @@ import polars as pl
 import datetime
 from memory_profiler import profile
 from data_loader import pandas_df, polars_df 
+import matplotlib as plt 
 
 tickers = polars_df['symbol'].unique() 
 
@@ -62,4 +63,23 @@ def calc_rolling_sharpe_pl (symbol, df, window=20):
         (df["rolling_mean"] / df["rolling_std"]).alias("rolling_sharpe")
     )
     return new_df
+
+##########################################################################################
+
+# Visualize results for one symbol (e.g., AAPL) using matplotlib or plotly.
+
+def display_MA_plot(df, symbol):    
+    plt.plot(df.index, df[symbol]["Moving_MA"])
+
+calc_MA_pd ("AAPL", pandas_df)
+calc_MA_pl ("AAPL", polars_df) 
+
+calc_rolling_std_pd ("AAPL", pandas_df)
+calc_rolling_std_pl ("AAPL", polars_df)
+
+calc_rolling_sharpe_pd ("AAPL", pandas_df)
+calc_rolling_sharpe_pl ("AAPL", polars_df) 
+
+display_MA_plot(pandas_df, "AAPL")
+display_MA_plot(polars_df, "AAPL")
 
