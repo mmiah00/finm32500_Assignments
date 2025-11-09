@@ -48,3 +48,6 @@ class Gateway:
     def deserialize(self, data):
         string = data.decode('utf-8')
         return string
+    
+gate = Gateway()
+print(gate.market_data('AAPL'))
