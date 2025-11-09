@@ -31,9 +31,10 @@ class OrderBook:
                 else:
                     raise RuntimeError(f"Oops")
 
+def run_orderbook(): 
+    orders = OrderBook()
+    order.connect()
 
-
-orders = OrderBook()
 # print(orders.orderbook)
 # orders.receive({
 #     "Ticker": "AAPL",

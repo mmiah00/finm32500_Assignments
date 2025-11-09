@@ -68,3 +68,8 @@ class Strategy:
         ticker = data["Ticker"]
         score = data['Score']
         self.sentiment_scores[ticker] = score
+    
+def run_strategy(): 
+    strat = Strategy()
+    strat.connect()
+    strat.connect_order()
