@@ -1,0 +1,1 @@
+# Generates trading signals and sends orders

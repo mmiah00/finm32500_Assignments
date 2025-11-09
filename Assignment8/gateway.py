@@ -1,0 +1,1 @@
+# Streams price & sentiment data via TCP
