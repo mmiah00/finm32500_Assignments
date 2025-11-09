@@ -51,3 +51,5 @@ class SharedPriceBook:
     def unlink(self):
         # destroys shared memory block 
         self.shm.unlink()
+
+print(f"[SharedPriceBook] Shared memory name={self.shm.name}, size={self.shm.size/1024:.2f} KB")
