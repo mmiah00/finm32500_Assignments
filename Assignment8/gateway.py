@@ -20,7 +20,7 @@ class Gateway:
             bids.append([bid, size])
             asks.append([ask, size])
 
-        market_data = {'Ticker': ticker, 'Bids':bids, 'Asks': asks, 'Volume': random.randint(100,10000)}
+        market_data = {'Ticker': ticker, 'Bids':bids, 'Asks': asks, 'Last Price': starting_price, 'Volume': random.randint(100,10000)}
 
         return market_data
     
