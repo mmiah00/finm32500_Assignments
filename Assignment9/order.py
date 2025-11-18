@@ -8,11 +8,26 @@ class OrderState(Enum):
     REJECTED = auto()
 
 class Order:
-    def __init__(self, symbol, qty, side):
+    def __init__(self, symbol, qty, side, price):
         self.state = OrderState.NEW
+        self.symbol = symbol
+        self.qty = qty
+        self.side = side
+        self.price = price
 
     def transition(self, new_state):
         allowed = {
             OrderState.NEW: {OrderState.ACKED, OrderState.REJECTED},
             OrderState.ACKED: {OrderState.FILLED, OrderState.CANCELED},
         }
+        if self.state == OrderState.NEW:
+            if new_state in allowed[OrderState.NEW]:
+                self.state = new_state
+            else:
+                print('Not Allowed')
+        if self.state == OrderState.ACKED:
+            if new_state in allowed[OrderState.ACKED]:
+                self.state = new_state
+            else:
+                print('Not Allowed')
+        
