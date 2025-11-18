@@ -6,11 +6,9 @@ class Cleaner:
         self.name = name
         self.remove()
         self.datetime_sort()
+        self.derived_features()
         self.save_cleaned()
         self.print()
-
-    def print(self):
-        print(self.df)
 
     def create_df(self,name):
         self.df = pd.read_parquet(path=f'EndToEnd/data/{name}.parquet')
@@ -30,10 +28,17 @@ class Cleaner:
         return self.df
 
     def derived_features(self):
-        pass
+        self.df['Daily Returns'] = self.df['Close'].pct_change()
+        self.df['Monthly Returns'] = self.df['Daily Returns'].resample('M').apply(lambda x: (1+ x).prod() - 1)
+        self.df['Quarterly Returns'] = self.df['Daily Returns'].resample('Q').apply(lambda x: (1+ x).prod() - 1)
+        return self.df
 
     def save_cleaned(self):
         self.df.to_parquet(path=f'EndToEnd/cleaned/{self.name}.parquet')
+        return self.df
+    
+    def print(self):
+        print(self.df)
         return self.df
 
 
