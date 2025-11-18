@@ -1,13 +1,12 @@
 import pandas as pd 
 import yfinance as yf 
 import requests
-    
+
 class PriceLoader: 
 
-    def __init__ (self, filepath="data/", start="2005-01-01", end="2025-01-01", tickers =[]): 
+    def __init__ (self, filepath="EndToEnd/data/", period='7d', tickers =[]): 
         self.filepath = filepath 
-        self.start_date = start 
-        self.end_date = end 
+        self.period = period
         self.tickers = tickers 
     
     def load_tickers(self, tickers_url="https://en.wikipedia.org/wiki/List_of_S%26P_500_companies"): 
@@ -51,7 +50,7 @@ class PriceLoader:
             while i < len(self.tickers): 
                 print(f"Downloading batch {file_num}")
                 tickers_batch = self.tickers[i:i+batch_size]
-                data = yf.download(tickers=tickers_batch, start = self.start_date, end=self.end_date, group_by="ticker", auto_adjust=True)
+                data = yf.download(tickers=tickers_batch, period=self.period, group_by="ticker", auto_adjust=True, interval='1m')
                 
 
                 # download each ticker in its own file 
@@ -64,48 +63,51 @@ class PriceLoader:
                         df = df.dropna() # drop null values 
                         
                         # save to its own file 
-                        filename = f"{self.filepath}{ticker}_{self.start_date}_to_{self.end_date}.parquet" 
-                        df.to_parquet(filename)
+                        filename = f"{self.filepath}{ticker}_{self.period}.csv" 
+                        df.to_csv(filename)
                     except Exception as e:
                         print(f"Error saving {ticker} data: {e}")
                 
                 i += batch_size 
                 file_num += 1
 
-    def get_ticker_data (self, ticker, path): 
+    def get_ticker_data(self, ticker, path): 
         # read in data of given ticker from data in local storage @ location path
         
         # if not path.exists():
         #     raise FileNotFoundError(f"No data file found for {ticker}")
-        # return pd.read_parquet(filepath)
+        # return pd.read_csv(filepath)
 
         try: 
-            return pd.read_parquet(path)
+            return pd.read_csv(path)
         except FileNotFoundError as e: 
             print (f"File at location \'{path}\' not found for {ticker}")
     
-    def get_select_ticker_data (self, tickers): 
+    def get_select_ticker_data(self, tickers): 
         # can be used to get dataframe data for all tickers or of select group of tickers as specified by the tickers argument 
         dfs = {}
         for t in tickers:
             try:
-                path = f"{self.filepath}{t}_{self.start_date}_to_{self.end_date}.parquet" 
+                path = f"{self.filepath}{t}_{self.period}.csv" 
+                print(self.get_ticker_data(t, path))
                 dfs[t] = self.get_ticker_data(t, path)["Close"]
             except FileNotFoundError:
                 print(f"Missing {t}")
         return pd.DataFrame(dfs) # returns a dictionary of key = ticker name (str) and value = ticker prices (Pandas Series)
  
     
-if __name__ == "__main__":
-    loader = PriceLoader()
-    ticks = loader.load_tickers() 
+# if __name__ == "__main__":
+#     loader = PriceLoader()
+#     ticks = loader.load_tickers() 
 
-    # loader.download_ticker_prices() 
-    data = loader.get_select_ticker_data(loader.tickers)
+#     loader.download_ticker_prices() 
+#     data = loader.get_select_ticker_data(loader.tickers)
     
-    for ticker in data: 
-        print(f"== Data for ticker: {ticker} ==")
-        ticker_data = data[ticker]
-        print(ticker_data.head())
-        print("===========")
+#     for ticker in data: 
+#         print(f"== Data for ticker: {ticker} ==")
+#         ticker_data = data[ticker]
+#         print(ticker_data.head())
+#         print("===========")
+
+
 

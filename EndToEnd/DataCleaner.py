@@ -1,4 +1,6 @@
 import pandas as pd
+import numpy as np
+import os
 
 class Cleaner:
     def __init__(self, name):
@@ -8,10 +10,10 @@ class Cleaner:
         self.datetime_sort()
         self.derived_features()
         self.save_cleaned()
-        self.print()
+        # self.print()
 
     def create_df(self,name):
-        self.df = pd.read_parquet(path=f'EndToEnd/data/{name}.parquet')
+        self.df = pd.read_csv(f'EndToEnd/data/{name}')
         return self.df
 
     def remove(self):
@@ -22,19 +24,20 @@ class Cleaner:
     def datetime_sort(self):
         is_datetime = isinstance(self.df.index, pd.DatetimeIndex)
         if is_datetime is False:
-            self.df['Date'] = pd.to_datetime(self.df['Date'])
-            self.df = self.df.set_index('Date')
+            self.df['Datetime'] = pd.to_datetime(self.df['Datetime'])
+            self.df = self.df.set_index('Datetime')
         self.df = self.df.sort_index()
         return self.df
 
     def derived_features(self):
-        self.df['Daily Returns'] = self.df['Close'].pct_change()
-        self.df['Monthly Returns'] = self.df['Daily Returns'].resample('M').apply(lambda x: (1+ x).prod() - 1)
-        self.df['Quarterly Returns'] = self.df['Daily Returns'].resample('Q').apply(lambda x: (1+ x).prod() - 1)
+        self.df['Minute Returns'] = self.df['Close'].pct_change()
+        self.df['Rolling 5 Minute Returns'] = (1+self.df['Minute Returns']).rolling(window=5).apply(np.prod, raw=True) - 1
+        self.df['20 Minute Moving Average'] = (self.df['Minute Returns']).rolling(window=20).mean()
+        self.df['50 Minute Moving Average'] = (self.df['Minute Returns']).rolling(window=50).mean()
         return self.df
 
     def save_cleaned(self):
-        self.df.to_parquet(path=f'EndToEnd/cleaned/{self.name}.parquet')
+        self.df.to_csv(f'EndToEnd/cleaned/{self.name}')
         return self.df
     
     def print(self):
@@ -42,6 +45,10 @@ class Cleaner:
         return self.df
 
 
-if __name__ == "__main__":
-    name = 'AAPL_2005-01-01_to_2025-01-01'
-    cleaner = Cleaner(name)
+# if __name__ == "__main__":
+#     directory = '/Users/ericbeechen/Documents/GitHub/finm32500_Assignments/EndToEnd/data/'
+#     names = []
+#     for entry in os.scandir(directory):
+#         names.append(entry.name)
+#     for name in names:    
+#         cleaner = Cleaner(name)
