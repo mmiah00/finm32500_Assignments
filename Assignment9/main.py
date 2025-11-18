@@ -7,7 +7,8 @@ fix = FixParser()
 risk = RiskEngine()
 log = Logger()
 
-raw = "8=FIX.4.2|35=D|55=AAPL|54=1|38=500|40=2|10=128"
+# raw = "8=FIX.4.2|35=D|55=AAPL|54=1|38=500|40=2|10=128"
+raw = "8=FIX.4.2|35=D|55=AAPL|44=50|54=1|38=500|40=2|10=128"
 msg = fix.parse(raw)
 
 order = Order(msg["55"], int(msg["38"]), msg["54"])

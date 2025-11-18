@@ -3,7 +3,8 @@ import json
 
 class Logger:
     def __init__(self, path="events.json"):
-
+        pass
+    
     def log(self, event_type, data):
         pass
 
