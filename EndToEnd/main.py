@@ -1,6 +1,7 @@
 from PriceLoader import PriceLoader
 from DataCleaner import Cleaner
 from Momentum import Momentum
+from Gateway import Gateway
 import pandas as pd
 import os
 
@@ -23,5 +24,10 @@ for entry in os.scandir(directory):
 df = pd.read_csv(f'{base}cleaned/{tickers[0]}_7d.csv')
 momentum = Momentum(df)
 results = momentum.run()
-print(results)
+ticker = 'AAPL'
+
+gate = Gateway(df, ticker)
+market_data = gate.stream_data()
+print(market_data)
+
 
