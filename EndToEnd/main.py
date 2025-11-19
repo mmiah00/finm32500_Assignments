@@ -13,12 +13,15 @@ import os
 base = '/Users/ericbeechen/Documents/GitHub/finm32500_Assignments/EndToEnd/'
 directory = f'{base}data/'
 names = []
+tickers = []
 for entry in os.scandir(directory):
     names.append(entry.name)
+    tickers.append(entry.name.split('.')[0].split('_')[0])
 # for name in names:
 #     cleaner = Cleaner(name)
 
-df = pd.read_csv(f'{base}cleaned/{names[0]}')
+df = pd.read_csv(f'{base}cleaned/{tickers[0]}_7d.csv')
 momentum = Momentum(df)
 results = momentum.run()
 print(results)
+
