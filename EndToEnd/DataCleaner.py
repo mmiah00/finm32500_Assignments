@@ -14,6 +14,7 @@ class Cleaner:
 
     def create_df(self,name):
         self.df = pd.read_csv(f'EndToEnd/data/{name}')
+        self.datetime_sort() 
         return self.df
 
     def remove(self):
