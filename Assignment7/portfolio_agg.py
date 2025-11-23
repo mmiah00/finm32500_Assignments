@@ -1,4 +1,5 @@
 import pandas as pd
+import polars as pl
 import json
 import multiprocessing
 import concurrent.futures
@@ -56,12 +57,12 @@ def calc_metrics_seq_polars(df: pl.DataFrame, symbol: str, qty: int = 1) -> pl.D
         ])
         .with_columns([
             # cumulative returns = (1 + r).cumprod() - 1
-            ((1 + pl.col("returns")).cumprod() - 1).alias("cumulative_returns")
+            ((1 + pl.col("returns")).cum_prod() - 1).alias("cumulative_returns")
         ])
         .with_columns([
             (
-                (pl.col("cumulative_returns") - pl.col("cumulative_returns").cummax())
-                / pl.col("cumulative_returns").cummax()
+                (pl.col("cumulative_returns") - pl.col("cumulative_returns").cum_max())
+                / pl.col("cumulative_returns").cum_max()
             ).alias("drawdown")
         ])
     )
