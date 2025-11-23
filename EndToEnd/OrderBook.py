@@ -47,7 +47,7 @@ class OrderBook:
             return float('inf')
 
     def add(self, order):
-        self.open_orders.put((order.price, order.time, order))
+        self.open_orders.put((order.price, order.time,order.order_id, order))
         return "Order added to book."
 
     def modify(self):
@@ -93,7 +93,7 @@ class OrderBook:
                 order.size = max(0, order.size - trade.size)
                 book_order.size = max(0, book_order.size - trade.size)
                 # self.trades.put(trade)
-                self.trades.put((price, order.time, trade))
+                self.trades.put((price, order.time, order.order_id,trade))
                 # priority += 1
             levels[price] = [order for order in order_level if order.size > 0]
             if len(levels[price]) == 0:
@@ -122,7 +122,7 @@ print('We receive these orders:')
 for order in orders:
     print(order)
     # ob.open_orders.put(order)
-    ob.open_orders.put((order.price, order.time, order))
+    ob.open_orders.put((order.price, order.time,order.order_id,order))
     # priority += 1
 print('Processing orders...')
 while not ob.open_orders.empty():
