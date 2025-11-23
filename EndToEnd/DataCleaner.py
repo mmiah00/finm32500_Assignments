@@ -4,17 +4,17 @@ import os
 
 class Cleaner:
     def __init__(self, name):
-        self.df = self.create_df(name)
         self.name = name
-        self.remove()
+        self.df = self.create_df(name)
         self.datetime_sort()
         self.derived_features()
+        self.remove()
         self.save_cleaned()
         # self.print()
 
     def create_df(self,name):
         self.df = pd.read_csv(f'EndToEnd/data/{name}')
-        self.datetime_sort() 
+        # self.datetime_sort() 
         return self.df
 
     def remove(self):
@@ -38,7 +38,7 @@ class Cleaner:
         return self.df
 
     def save_cleaned(self):
-        self.df.to_csv(f'EndToEnd/cleaned/{self.name}.csv')
+        self.df.to_csv(f'EndToEnd/cleaned/{self.name}_cleaned.csv')
         return self.df
     
     def print(self):
