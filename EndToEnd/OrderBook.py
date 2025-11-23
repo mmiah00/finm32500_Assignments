@@ -1,5 +1,6 @@
 import enum
-import queue
+# import queue
+from queue import PriorityQueue
 import time
 from collections import defaultdict
 
@@ -27,8 +28,8 @@ class OrderBook:
         self.ask_size = []
         self.bids = defaultdict(list)
         self.asks = defaultdict(list)
-        self.open_orders = queue.Queue()
-        self.trades = queue.Queue()
+        self.open_orders = PriorityQueue() #queue.Queue()
+        self.trades = PriorityQueue() # queue.Queue()
         self.order_id = 0
 
     @property
@@ -83,13 +84,16 @@ class OrderBook:
             if (order.size == 0 or (price_check(price))):
                 break
             order_level = levels[price]
+            priority = 1 # lower priority val, gets executed first 
             for (j, book_order) in enumerate(order_level):
                 if order.size == 0:
                     break
                 trade = self.execute(order, book_order)
                 order.size = max(0, order.size - trade.size)
                 book_order.size = max(0, book_order.size - trade.size)
-                self.trades.put(trade)
+                # self.trades.put(trade)
+                self.trades.put((priority, trade))
+                priority += 1
             levels[price] = [order for order in order_level if order.size > 0]
             if len(levels[price]) == 0:
                 levels.pop(price)
@@ -113,9 +117,13 @@ orders = [Order(order_id=1, price = 10, side='Buy', size = 1, time = '2012-04-12
         Order(order_id=2, price = 10, side='Buy', size = 1, time = '2012-04-12'),
         Order(order_id=3, price = 10, side='Buy', size = 1, time = '2012-04-12')]
 print('We receive these orders:')
+priority = 1 # lower priority val, gets executed first 
 for order in orders:
     print(order)
-    ob.open_orders.put(order)
+    # ob.open_orders.put(order)
+    ob.open_orders.put((priority, order))
+    priority += 1
+print('Processing orders...')
 while not ob.open_orders.empty():
     ob.process(ob.open_orders.get())
 print('Resulting order book:')
