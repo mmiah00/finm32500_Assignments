@@ -46,8 +46,9 @@ class OrderBook:
         else:
             return float('inf')
 
-    def add(self):
-        pass
+    def add(self, priority, order):
+        self.open_orders.put((priority, order))
+        return "Order added to book."
 
     def modify(self):
         pass
