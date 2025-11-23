@@ -38,7 +38,7 @@ class Cleaner:
         return self.df
 
     def save_cleaned(self):
-        self.df.to_csv(f'EndToEnd/cleaned/{self.name}')
+        self.df.to_csv(f'EndToEnd/cleaned/{self.name}.csv')
         return self.df
     
     def print(self):
