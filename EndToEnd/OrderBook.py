@@ -11,6 +11,7 @@ class Order:
         self.size = size
         self.side = side
         self.time = time
+        self.status = None 
 
 class Trade:
     def __init__(self, side, price, size, order_id, book_order_id):
@@ -47,14 +48,34 @@ class OrderBook:
             return float('inf')
 
     def add(self, order):
+        order.status = "Added"
         self.open_orders.put((order.price, order.time,order.order_id, order))
-        return "Order added to book."
+        print(f"Order {order.order_id} added to book.") 
+        return order 
 
-    def modify(self):
-        pass
+    def modify(self, old_order, new_price=None, new_size=None, new_side=None):
+        order.status = "Modified"
+        if new_price: 
+            old_order.price = new_price
+        if new_size:
+            old_order.size = new_size
+        if new_side:
+            old_order.side = new_side
+        self.cancel(old_order)
+        self.open_orders.put((old_order.price, old_order.time,old_order.order_id, old_order))
+        return old_order
 
-    def cancel(self):
-        pass
+    def cancel(self, order):
+        order.status = "Canceled" 
+
+        new_orders = PriorityQueue()
+        while not self.open_orders.empty():
+            current_order = self.open_orders.get()[-1]
+            if current_order.order_id != order.order_id:
+                new_orders.put((current_order.price, current_order.time,current_order.order_id,current_order))
+        self.open_orders = new_orders
+        print(f"Order {order.order_id} canceled from book.")
+        return order 
 
     def process(self, order):
         if order.side == 'Buy':
