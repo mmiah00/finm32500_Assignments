@@ -126,5 +126,5 @@ for order in orders:
     # priority += 1
 print('Processing orders...')
 while not ob.open_orders.empty():
-    ob.process(ob.open_orders.get())
+    ob.process(ob.open_orders.get()[-1])
 print('Resulting order book:')
