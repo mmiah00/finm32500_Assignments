@@ -1,11 +1,5 @@
-'''
-Gateway - Write all orders to a file for audit and analysis. This should include when orders are sent, modified, cancelled or filled. 
-Implementation Target:
-
-An OrderManager class for validation and a Gateway class for logging orders.
-'''
-
 import pandas as pd
+import os 
 
 
 global MESSAGE_DELIMITER

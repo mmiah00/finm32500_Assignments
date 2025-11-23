@@ -80,7 +80,7 @@ class OrderBook:
     def process(self, order):
         if order.side == 'Buy':
             # 'Buy'
-            if order.price >= self.min_ask and self.offers:
+            if order.price >= self.min_ask and self.asks:
                 self.process_match(order)
             else:
                 self.bids[order.price].append(order)
@@ -96,7 +96,8 @@ class OrderBook:
             levels = self.bids
         else:
             levels = self.asks
-        prices = sorted(levels.keys, reverse=(order.side == 'Sell'))
+        # prices = sorted(levels.keys, reverse=(order.side == 'Sell'))
+        prices = sorted(levels, reverse=(order.side == 'Sell'))
         def price_check(book_price):
             if order.side == "Buy":
                 return order.price < book_price

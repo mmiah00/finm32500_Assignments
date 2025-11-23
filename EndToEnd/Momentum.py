@@ -1,6 +1,7 @@
 class Momentum:
     def __init__(self, df):
         self.df = df
+        # self.df.set_index('Datetime', inplace=True)
 
     def run(self): 
         buy_signals = {}
