@@ -53,3 +53,9 @@ class OrderManager:
                 self.available_capital += order.price * order.size
                 self.current_position -= order.size
         return is_valid, message
+    
+    def get_buy_price(self):
+        if self.current_position <= 0:
+            return None
+        avg_price = sum(order.price * order.size for order in self.orders_executed if order.side == 'Buy') / self.current_position
+        return avg_price
