@@ -6,6 +6,10 @@ class Momentum:
         buy_signals = {}
         for index, row in self.df.iterrows():
             if row['20 Minute Moving Average'] > row['50 Minute Moving Average']:
-                buy_signals[index] = row['Close']
+                buy_signals[index] = 1 #row['Close']
+            elif row['20 Minute Moving Average'] < row['50 Minute Moving Average']:
+                buy_signals[index] = -1 # short 
+            else: 
+                buy_signals[index] = 0  # don't hold 
         return buy_signals
 
