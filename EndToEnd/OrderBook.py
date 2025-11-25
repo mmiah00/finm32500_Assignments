@@ -112,10 +112,11 @@ class OrderBook:
                 if order.size == 0:
                     break
                 trade = self.execute(order, book_order)
+                print(order.size, book_order.size, trade.size)
                 order.size = max(0, order.size - trade.size)
                 book_order.size = max(0, book_order.size - trade.size)
                 # self.trades.put(trade)
-                self.trades.put((price, order.time, order.order_id,trade))
+                self.trades.put((order.price, order.time, order.order_id, id(trade), trade))
                 # priority += 1
             levels[price] = [order for order in order_level if order.size > 0]
             if len(levels[price]) == 0:
@@ -133,20 +134,20 @@ class OrderBook:
         return Trade(order.side, book_order.price, trade_size, order.order_id, book_order.order_id)
 
 
-# self, order_id, price, size, side, time)
-print('Example 1:')
-ob = OrderBook()
-orders = [Order(order_id=1, price = 10, side='Buy', size = 1, time = '2012-04-12'),
-        Order(order_id=2, price = 10, side='Buy', size = 1, time = '2012-04-12'),
-        Order(order_id=3, price = 10, side='Buy', size = 1, time = '2012-04-12')]
-print('We receive these orders:')
-# priority = 1 # lower priority val, gets executed first 
-for order in orders:
-    print(order)
-    # ob.open_orders.put(order)
-    ob.open_orders.put((order.price, order.time,order.order_id,order))
-    # priority += 1
-print('Processing orders...')
-while not ob.open_orders.empty():
-    ob.process(ob.open_orders.get()[-1])
-print('Resulting order book:')
+# # self, order_id, price, size, side, time)
+# print('Example 1:')
+# ob = OrderBook()
+# orders = [Order(order_id=1, price = 10, side='Buy', size = 1, time = '2012-04-12'),
+#         Order(order_id=2, price = 10, side='Buy', size = 1, time = '2012-04-12'),
+#         Order(order_id=3, price = 10, side='Buy', size = 1, time = '2012-04-12')]
+# print('We receive these orders:')
+# # priority = 1 # lower priority val, gets executed first 
+# for order in orders:
+#     print(order)
+#     # ob.open_orders.put(order)
+#     ob.open_orders.put((order.price, order.time,order.order_id,order))
+#     # priority += 1
+# print('Processing orders...')
+# while not ob.open_orders.empty():
+#     ob.process(ob.open_orders.get()[-1])
+# print('Resulting order book:')
