@@ -84,7 +84,7 @@ class OrderBook:
                 self.process_match(order)
             else:
                 self.bids[order.price].append(order)
-        else:
+        elif order.side == 'Sell':
             # 'Sell
             if order.price <= self.max_bid and self.bids:
                 self.process_match(order)
