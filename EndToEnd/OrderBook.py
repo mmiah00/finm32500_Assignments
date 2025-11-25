@@ -54,7 +54,7 @@ class OrderBook:
         return order 
 
     def modify(self, old_order, new_price=None, new_size=None, new_side=None):
-        order.status = "Modified"
+        old_order.status = "Modified"
         if new_price: 
             old_order.price = new_price
         if new_size:
@@ -118,11 +118,11 @@ class OrderBook:
                 # self.trades.put(trade)
                 self.trades.put((order.price, order.time, order.order_id, id(trade), trade))
                 # priority += 1
-            levels[price] = [order for order in order_level if order.size > 0]
+            levels[price] = [o for o in order_level if o.size > 0]
             if len(levels[price]) == 0:
                 levels.pop(price)
         if order.size > 0:
-            if order.size == 'Buy':
+            if order.side == 'Buy':
                 same_side = self.bids
                 same_side[order.price].append(order)
             else:

@@ -33,12 +33,12 @@ class Cleaner:
     def derived_features(self):
         self.df['Minute Returns'] = self.df['Close'].pct_change()
         self.df['Rolling 5 Minute Returns'] = (1+self.df['Minute Returns']).rolling(window=5).apply(np.prod, raw=True) - 1
-        self.df['20 Minute Moving Average'] = (self.df['Minute Returns']).rolling(window=20).mean()
-        self.df['50 Minute Moving Average'] = (self.df['Minute Returns']).rolling(window=50).mean()
+        self.df['20 Minute Moving Average'] = (self.df['Close']).rolling(window=20).mean()
+        self.df['50 Minute Moving Average'] = (self.df['Close']).rolling(window=50).mean()
         return self.df
 
     def save_cleaned(self):
-        self.df.to_csv(f'EndToEnd/cleaned/{self.name}_cleaned.csv')
+        self.df.to_csv(f'EndToEnd/cleaned/{self.name}')
         return self.df
     
     def print(self):
@@ -46,10 +46,10 @@ class Cleaner:
         return self.df
 
 
-# if __name__ == "__main__":
-#     directory = '/Users/ericbeechen/Documents/GitHub/finm32500_Assignments/EndToEnd/data/'
-#     names = []
-#     for entry in os.scandir(directory):
-#         names.append(entry.name)
-#     for name in names:    
-#         cleaner = Cleaner(name)
+if __name__ == "__main__":
+    directory = f'C:/Users/ebeec/PycharmProjects/PortfolioRiskManagement/finm32500_Assignments/EndToEnd/data'
+    names = []
+    for entry in os.scandir(directory):
+        names.append(entry.name)
+    for name in names:    
+        cleaner = Cleaner(name)
