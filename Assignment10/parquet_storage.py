@@ -30,7 +30,7 @@ AAPL_df = AAPL_df[(AAPL_df['timestamp'] >= start) & (AAPL_df['timestamp'] <= end
 AAPL_df['Minute Returns'] = AAPL_df['close'].pct_change()
 AAPL_df['5 Minutes Returns'] = (1+AAPL_df['Minute Returns']).rolling(window=5).apply(np.prod, raw=True) - 1
 
-print(AAPL_df)
+# print(AAPL_df)
 
 vols = {}
 for df in dfs:

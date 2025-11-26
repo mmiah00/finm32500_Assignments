@@ -28,5 +28,5 @@ class DataLoader:
         self.market_data = pd.to_datetime(self.market_data['timestamp'])
 
 
-data = DataLoader('market_data_multi.csv','tickers.csv')
+
 
