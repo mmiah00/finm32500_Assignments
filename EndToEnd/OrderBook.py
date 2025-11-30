@@ -91,6 +91,7 @@ class OrderBook:
             else:
                 self.asks[order.price].append(order)
 
+
     def process_match(self, order):
         if order.side == 'Sell':
             levels = self.bids

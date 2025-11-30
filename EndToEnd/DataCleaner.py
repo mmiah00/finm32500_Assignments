@@ -46,6 +46,7 @@ class Cleaner:
         return self.df
 
 
+
 if __name__ == "__main__":
     directory = f'C:/Users/ebeec/PycharmProjects/PortfolioRiskManagement/finm32500_Assignments/EndToEnd/data'
     names = []
