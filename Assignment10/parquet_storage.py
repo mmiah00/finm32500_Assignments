@@ -34,6 +34,9 @@ AAPL_df['5 Minutes Returns'] = (1+AAPL_df['Minute Returns']).rolling(window=5).a
 
 vols = {}
 for df in dfs:
-    vols[df] = float(dfs[df]['close'].diff().std()-1)
+    daily_returns = daily_close.pct_change()
+    rolling_5d_vol = daily_returns.rolling(window=5).std()
+    vols[df] = rolling_5d_vol
+    # vols[df] = float(dfs[df]['close'].diff().std()-1)
 
 print(vols)
