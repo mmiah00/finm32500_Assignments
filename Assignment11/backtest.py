@@ -39,9 +39,36 @@ class Backtest:
                 self.cash += price
             self.pnls[index] = self.pnls.get(index, 0) + self.pnl
         return self
+    
+    def plot(self, kind='pnl', title=None, save_path=None, show=True):
+        if not self.pnls:
+            raise RuntimeError("No PnL data to plot. Run `simulate()` first.")
 
-    def plot(self):
-        pass
+        series = pd.Series(self.pnls)
+        # ensure chronological order
+        series = series.sort_index()
+
+        fig, ax = plt.subplots(figsize=(10, 6))
+        ax.plot(series.index, series.values, label='Cumulative PnL')
+
+        if title is None:
+            ax.set_title('Cumulative PnL')
+        else:
+            ax.set_title(title)
+
+        ax.set_xlabel('Time')
+        ax.set_ylabel('PnL')
+        ax.legend()
+        ax.grid(True)
+        fig.tight_layout()
+
+        if save_path:
+            fig.savefig(save_path, dpi=150)
+
+        if show:
+            plt.show()
+
+        return fig
 
 
 if __name__ == "__main__":
