@@ -10,6 +10,7 @@ class Signals:
         self.high_threshold = high_threshold
         self.signals = {}
 
+
     def generate(self, X):
         if isinstance(X, (pd.Series, pd.DataFrame)):
             X = X.values
