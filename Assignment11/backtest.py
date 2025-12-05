@@ -20,7 +20,6 @@ class Backtest:
 
     def simulate(self, strategy):
         for index, row in self.df.iterrows():
-            print(row)
             price = row['close']
             ticker = row['ticker']
             signal = row[f'{strategy} signals']
