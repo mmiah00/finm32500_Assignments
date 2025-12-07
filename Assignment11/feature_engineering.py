@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 
 
 class FeatureEngineering:
-    def __init__(self, folder='./Assignment11/'):
+    def __init__(self, folder='./'):
         self.folder = folder
         self.marketfile = 'market_data_ml.csv'
         self.tickersfile = 'tickers-1.csv'
